@@ -31,7 +31,8 @@ $color_vice: #fe6801;
 $font_theme: #333;
 $font_vice: #666;
 $font_bold: 'PingFang-SC-Bold', 'SourceHanSansCN-Bold', Arial, Helvetica, sans-serif;
-$icon_sprite: url('~@/assets/css_sprites.png') no-repeat;
+// $icon_sprite: url('~@/assets/css_sprites.png') no-repeat;
+$icon_sprite: url('~static/images/css_sprites.png') no-repeat;
 
 .container {
   background: #fff;
