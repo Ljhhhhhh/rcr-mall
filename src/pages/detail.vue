@@ -277,10 +277,17 @@
         this.bannerList = clearupList(this.bannerList)
         // 设置scroll滚动
         this.scroll = new BScroll('.scroll-wrap', {
-          click: true
+            click: true
         })
+        // this.scroll = new BScroll('.scroll-wrap', {
+        //   disableMouse: true,
+        //   disableTouch: false,
+        //   disablePointer: true,
+        //   scrollY:    true,
+        // })
         // setTimeout(() => {
-        // this.scroll.scrollToElement(this.$refs.program, 300)
+          
+        // // this.scroll.scrollToElement(this.$refs.program, 300)
         // },1000)
     },
       ...mapMutations({
@@ -300,7 +307,7 @@
   .scroll-wrap {
     width: 100%;
     height: calc(100vh - 104px);
-    overflow: hidden;
+    overflow: hidden;  
   }
 
   .share {
