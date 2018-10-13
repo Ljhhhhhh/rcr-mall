@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="album-container container">
-      <h-header title="车辆相册"></h-header>
+      <h-header title="2016款 雅阁 混动2.0L 锐酷版"></h-header>
       <div class="album-tab">
         <span v-for="(tab, i) in tabList" :key="i" :class="{active:activeIndex===i}" @click="changeType(i)">{{tab}}</span>
       </div>

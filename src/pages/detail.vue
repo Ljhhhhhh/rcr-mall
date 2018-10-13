@@ -6,11 +6,11 @@
     <div class="scroll-wrap">
       <div class="scroll-content">
         <div class="banner">
-          <van-swipe :show-indicators="false" @change="bannerChange">
-            <van-swipe-item v-for="(banner, index) in bannerList" :key="index" @click.native="preview(index+1)">
-              <img :src=banner.url>
-            </van-swipe-item>
-          </van-swipe>
+          <swiper :options="swiperOption" ref="mySwiper" @slideChange="bannerChange">
+            <swiper-slide v-for="(banner, index) in bannerList" :key="index" @click.native="preview(index+1)" >
+              <img :src="banner.url">
+            </swiper-slide>
+          </swiper>
           <div class="indicators">
             {{bannerIndex | padStartIndex(bannerList)}}/{{bannerList.length}}
           </div>
@@ -78,19 +78,125 @@
         </div>
         <div class="car-info_advantage">
           <h-content-title title="车型亮点"></h-content-title>
-          <div class="content">亮点(用户后台自定义)</div>
+          <div class="content">
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+            <p>亮点(用户后台自定义)</p>
+          </div>
         </div>
         <!--用户自定义：亮点 -->
         <div class="divide-border"></div>
         <div class="car-info_step">
           <h-content-title title="轻松四步 新车开回家"></h-content-title>
-          <div class="content">步骤(用户后台自定义)</div>
+          <div class="content">
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+            <p>步骤(用户后台自定义)</p>
+          </div>
         </div>
         <!--用户自定义：步骤 -->
         <div class="divide-border"></div>
         <div class="car-recommend">
           <h-content-title title="为你推荐"></h-content-title>
           <div class="recommend-list_box">
+            <div class="recommend-list van-hairline--surround">
+              <p>首付2.39万</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/heading/2018/autoshwo2018_mob.jpg?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>直降1200元</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/teaser/online4S_teaser20180629.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>送2000元油卡</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/new_home/teaser17_20180919.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>首付2.39万</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/heading/2018/autoshwo2018_mob.jpg?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>直降1200元</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/teaser/online4S_teaser20180629.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>送2000元油卡</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/new_home/teaser17_20180919.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>首付2.39万</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/heading/2018/autoshwo2018_mob.jpg?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>直降1200元</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/teaser/online4S_teaser20180629.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
+            <div class="recommend-list van-hairline--surround">
+              <p>送2000元油卡</p>
+              <img src="https://www.audi.cn/content/dam/nemo/cn/home/new_home/teaser17_20180919.png?downsize=880px:*">
+              <div>
+                <span>本田雅阁</span>
+                <span>2016款 混动2.0L</span>
+              </div>
+            </div>
             <div class="recommend-list van-hairline--surround">
               <p>首付2.39万</p>
               <img src="https://www.audi.cn/content/dam/nemo/cn/home/heading/2018/autoshwo2018_mob.jpg?downsize=880px:*">
@@ -122,6 +228,20 @@
     <keep-alive>
       <h-consult></h-consult>
     </keep-alive>
+    <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
+    <div class="fix-top_tab van-hairline--bottom" v-show="topTabActive.state">
+      <div class="top-tab_box">
+        <span 
+          class="top-tab_item" 
+          :class="{active:i===topTabActive.index}" 
+          v-for="(tab, i) in topTabElemMap" 
+          :key="i"
+          @click="scrollToElement(i)"
+          >
+          {{tab.title}}
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -129,15 +249,23 @@
   import hTag from '@/components/hTag'
   import hContentTitle from '@/components/hContentTitle'
   import hConsult from '@/components/hConsult'
+  import 'swiper/dist/css/swiper.css'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import {
     mapMutations
   } from 'vuex'
   import clearupList from '@/utils/clearupAlbumlist'
   import BScroll from 'better-scroll'
+  import hToTop from '@/components/hToTop'
   export default {
     name: 'Detail',
     data() {
+      var me = this;
       return {
+        topResrvedOffset: 45, // 顶部tab预留高度
+        swiperOption: { // swipe配置
+          loop: true,
+        },
         bannerIndex: 1,
         bannerList: [{
             type: '外观',
@@ -220,6 +348,33 @@
           h: '车辆颜色',
         },
         scroll: null,
+        toTopShow: false,
+        topTabActive: {
+          state: false,
+          index: null
+        },
+        topTabElemMap: [
+          {
+            title: '金融方案',
+            elem: '.car-info_program', // 金融方案
+            offsetTop: ''
+          },
+          {
+            title: '车辆信息',
+            elem: '.car-info_configuration', // 车辆信息
+            offsetTop: ''
+          },
+          {
+            title: '购车说明',
+            elem: '.car-info_step', // 购车说明
+            offsetTop: ''
+          },
+          {
+            title: '为您推荐',
+            elem: '.car-recommend', // 为您推荐
+            offsetTop: ''
+          },
+        ]
       }
     },
     mounted() {
@@ -227,10 +382,14 @@
     },
     watch: {
       $route: function (to, from) {
-        console.log(to, from);
         if (from.name = 'storeSelect') {
           this.show = true;
         }
+      }
+    },
+    computed: {
+      swiper() {
+        return this.$refs.mySwiper.swiper;
       }
     },
     methods: {
@@ -257,8 +416,11 @@
         })
         this.programActive = index;
       },
-      bannerChange(index) {
-        this.bannerIndex = index + 1
+      slideChangeTransitionStart() {
+        console.log(123);
+      },
+      bannerChange() {
+        this.bannerIndex = this.swiper.realIndex + 1
       },
       share() {
         alert('APP实现分享功能')
@@ -272,33 +434,68 @@
       infoDetailShow() {
         alert('展示活动详情')
       },
+      scrollToElement(index) {
+        if (!index && index !== 0) {
+          this.scroll.scrollTo(0, 0, 300)
+        } else {
+           this.scroll.scrollToElement(this.topTabElemMap[index]['elem'], 300, 0, -this.topResrvedOffset)
+        }
+      },
+      _scroll(pos) {
+          // 初始化每个元素对应的滚动高度
+          if (!this.topTabElemMap[0]['offsetTop']) {
+            this.topTabElemMap.forEach((item, index) => {
+              let offsetTop = document.querySelector(item.elem).offsetTop
+              item.offsetTop = offsetTop
+            })
+          }
+
+          // 回到顶部按钮的显隐控制
+          if (-pos.y > this.topTabElemMap[0]['offsetTop']) {
+            this.toTopShow = true
+          } else {
+            this.toTopShow = false
+          }
+          let activeIndex = -1
+          this.topTabElemMap.forEach((item, index) => {
+            let scrollY = -pos.y
+            if (scrollY > item.offsetTop - this.topResrvedOffset - 5) {
+              activeIndex = index
+            }
+          })
+          this.topTabActive.index = activeIndex
+      },
       _initPage() {
         // 整理banner列表，使其按照type归类
         this.bannerList = clearupList(this.bannerList)
         // 设置scroll滚动
         this.scroll = new BScroll('.scroll-wrap', {
-            click: true
+            click: true,
+            probeType: 2,
         })
-        // this.scroll = new BScroll('.scroll-wrap', {
-        //   disableMouse: true,
-        //   disableTouch: false,
-        //   disablePointer: true,
-        //   scrollY:    true,
-        // })
-        // setTimeout(() => {
-          
-        // // this.scroll.scrollToElement(this.$refs.program, 300)
-        // },1000)
+        this.scroll.on('scroll', (pos) => {
+          this._scroll(pos)
+        })
+        this.scroll.on('scrollEnd', (pos) => {
+          this._scroll(pos)
+          if (this.topTabActive.index < 0) {
+            this.topTabActive.state = false
+          } else {
+            this.topTabActive.state = true
+          }
+        })
     },
-      ...mapMutations({
-        set_albumlist: 'SET_ALBUMLIST'
-      })
+    ...mapMutations({
+      set_albumlist: 'SET_ALBUMLIST'
+      }),
     },
     components: {
       hHeader,
       hTag,
       hContentTitle,
       hConsult,
+      swiper, swiperSlide,
+      hToTop
     },
   };
 
@@ -340,6 +537,7 @@
       font-size: rem(12);
       font-family: $font_bold;
       letter-spacing: rem(2);
+      z-index: 3;
     }
   }
 
@@ -640,5 +838,35 @@
       }
     }
   }
-
+  .fix-top_tab{
+    position: fixed;
+    top: 44px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    padding: 0 rem(15);
+    box-sizing: border-box;
+    background: #FFF;
+    .top-tab_box{
+      display: flex;
+      justify-content:space-between;
+      height: 100%;
+      align-items: center;
+      .top-tab_item{
+        flex: 1;
+        text-align: center;
+        max-width: 4em;
+        height: 100%;
+        line-height: 40px;
+        font-size: rem(15);
+        color: $font_theme;
+        &.active{
+          color: $color_theme;
+          background: linear-gradient(left, $color_theme, $color_theme) no-repeat;
+          background-position: bottom center;
+          background-size: 100% 2px;
+        }
+      }
+    }
+  }
 </style>

@@ -47,6 +47,9 @@ export default {
         font-family: $font_bold;
         font-size: rem(17);
         text-align: center;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
       }
       &.right{
         text-align: right;

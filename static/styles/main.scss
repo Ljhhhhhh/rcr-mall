@@ -26,11 +26,16 @@ body {
   max-width: 540px;
   min-width: 320px;
 }
+
 $color_theme: #0198e7;
 $color_vice: #fe6801;
 $font_theme: #333;
 $font_vice: #666;
-$font_bold: 'PingFang-SC-Bold', 'SourceHanSansCN-Bold', Arial, Helvetica, sans-serif;
+$font_bold: 'PingFang-SC-Bold',
+'SourceHanSansCN-Bold',
+Arial,
+Helvetica,
+sans-serif;
 $icon_sprite: url('~static/images/css_sprites.png') no-repeat;
 
 .container {
@@ -94,3 +99,4 @@ p {
   right: 0;
   transform: translateY(-50%);
 }
+
