@@ -19,3 +19,8 @@ npm run build --report
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+* vue + vue-router + vuex + axios
+* 基于[vant](https://youzan.github.io/vant/#/zh-CN/intro)框架
+* 使用mock模拟车辆相册数据 + 利用async/await和axios完成异步请求 (只是演示mockjs的基本使用)
+* src/util/request:对axios进行基本项全局配置
