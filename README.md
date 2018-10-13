@@ -1,6 +1,6 @@
 # mall_rcr
 
-> 人车人商城
+> 商城
 
 ## Build Setup
 
