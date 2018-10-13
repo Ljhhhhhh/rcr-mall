@@ -5,7 +5,7 @@
     </h-header>
     <div class="scroll-wrap">
       <div class="scroll-content">
-        <div class="banner">
+        <div class="banner" v-if="bannerList.length">
           <swiper :options="swiperOption" ref="mySwiper" @slideChange="bannerChange">
             <swiper-slide v-for="(banner, index) in bannerList" :key="index" @click.native="preview(index+1)" >
               <img :src="banner.url">
@@ -257,6 +257,7 @@
   import clearupList from '@/utils/clearupAlbumlist'
   import BScroll from 'better-scroll'
   import hToTop from '@/components/hToTop'
+  import {fetchCarAlbum} from '@/api/car/carAlbum'
   export default {
     name: 'Detail',
     data() {
@@ -267,49 +268,7 @@
           loop: true,
         },
         bannerIndex: 1,
-        bannerList: [{
-            type: '外观',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/Hero/2016-05-30/120550M/resolutions/res-l1920x10000/120550M.jpg'
-          },
-
-          {
-            type: '中控',
-            url: 'https://www.maserati.com/mediaObject/sites/regional/cn/2018/0910-Resize/gc/%E5%AE%98%E7%BD%91%E5%86%85%E9%A5%B0%E5%9B%BE-resize-1920x1080-gc-3/original/%E5%AE%98%E7%BD%91%E5%86%85%E9%A5%B0%E5%9B%BE-resize-1920x1080-gc-3.jpg'
-          },
-          {
-            type: '外观',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-06-08/gc/resolutions/res-l1920x10000/gc.jpg'
-          },
-          {
-            type: '细节',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-05-30/120910M/resolutions/res-870x500/120910M.jpg'
-          },
-          {
-            type: '中控',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-05-30/120600M/resolutions/res-870x500/120600M.jpg'
-          },
-          {
-            type: '外观',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/gallery-slide/2016-05-30/111400M/resolutions/res-l1920x10000/111400M.jpg'
-          },
-          {
-            type: '细节',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-06-08/120610M/resolutions/res-870x582/120610M.jpg'
-          },
-          {
-            type: '细节',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-06-08/120640M/resolutions/res-870x582/120640M.jpg'
-          },
-          {
-            type: '中控',
-            url: 'https://www.maserati.com/mediaObject/sites/regional/cn/2018/0910-Resize/gc/%E5%AE%98%E7%BD%91%E5%86%85%E9%A5%B0%E5%9B%BE-resize-1920x1080-gc-1/original/%E5%AE%98%E7%BD%91%E5%86%85%E9%A5%B0%E5%9B%BE-resize-1920x1080-gc-1.jpg'
-          },
-
-          {
-            type: '外观',
-            url: 'https://www.maserati.com/mediaObject/sites/international/Models/grancabrio/in-page/2016-05-30/120590M/resolutions/res-l800x10000/120590M.jpg'
-          },
-        ],
+        bannerList: [],
         programList: [{
             first: 2.39,
             month: 5519,
@@ -377,6 +336,9 @@
         ]
       }
     },
+    created() {
+      this.getBannerList()
+    },
     mounted() {
       this._initPage()
     },
@@ -393,6 +355,11 @@
       }
     },
     methods: {
+      async getBannerList() {
+        let res = await fetchCarAlbum()
+        // 整理banner列表，使其按照type归类
+        this.bannerList = clearupList(res.items)
+      },
       preview(index) {
         console.log('index:', index);
         this.set_albumlist(this.bannerList)
@@ -466,8 +433,6 @@
           this.topTabActive.index = activeIndex
       },
       _initPage() {
-        // 整理banner列表，使其按照type归类
-        this.bannerList = clearupList(this.bannerList)
         // 设置scroll滚动
         this.scroll = new BScroll('.scroll-wrap', {
             click: true,

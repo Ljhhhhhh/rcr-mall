@@ -9,6 +9,7 @@ import Vant from 'vant';
 import 'vant/lib/vant-css/index.css';
 import 'static/styles/main.scss';
 import * as filters from './filters'; // global filters
+import './mock'; // simulation data
 Vue.use(Vant);
 FastClick.attach(document.body);
 // register global utility filters.
