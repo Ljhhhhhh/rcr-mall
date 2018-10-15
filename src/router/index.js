@@ -9,17 +9,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/detail'
+      redirect: '/detail',
     },
     {
       path: '/detail',
       name: 'Detail',
-      component: Detail
+      component: Detail,
     },
     {
       path: '/album',
       name: 'Album',
-      component: Album
-    }
-  ]
+      component: Album,
+    },
+  ],
 });

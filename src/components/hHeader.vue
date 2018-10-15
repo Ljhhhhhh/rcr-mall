@@ -16,14 +16,14 @@ export default {
     title: {
       type: String,
       required: true,
-    }
+    },
   },
   methods: {
     back() {
       this.$router.go(-1);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
   .header{
@@ -67,4 +67,3 @@ export default {
     vertical-align: -2px;
   }
 </style>
-

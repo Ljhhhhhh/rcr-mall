@@ -1,5 +1,5 @@
 const state = {
-  albumlist: []
+  albumlist: [],
 };
 
 export default state;

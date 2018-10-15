@@ -36,46 +36,46 @@
   </div>
 </template>
 <script>
-  import hStoreSelect from '@/components/hStoreSelect'
-  export default {
-    name: 'hConsult',
-    data() {
-      return {
-        show: false,
-        storeSelect: false,
-        heart: {
-          state: false,
-          text: '关注'
-        }
-      }
+import hStoreSelect from '@/components/hStoreSelect';
+export default {
+  name: 'hConsult',
+  data() {
+    return {
+      show: false,
+      storeSelect: false,
+      heart: {
+        state: false,
+        text: '关注',
+      },
+    };
+  },
+  methods: {
+    setHeart() {
+      this.heart.text = this.heart.state ? '关注' : '已关注';
+      this.heart.state = !this.heart.state;
     },
-    methods: {
-      setHeart() {
-        this.heart.text = this.heart.state ? '关注' : '已关注'
-        this.heart.state = !this.heart.state
-      },
-      setStore(id) {
-        this.show = true;
-        this.storeSelect = false
-        console.log(id);
-      },
-      selectStore() {
-        // this.storeSelect = true
-        // this.show = false
-        // 选择门店 如果由web端实现，开启上面两行
-        alert('选择门店')
-      },
-      consultNow() {
-        alert('咨询！');
-      },
-      toggleShow() {
-        this.show = !this.show;
-      }
+    setStore(id) {
+      this.show = true;
+      this.storeSelect = false;
+      console.log(id);
     },
-    components: {
-      hStoreSelect
-    }
-  }
+    selectStore() {
+      // this.storeSelect = true
+      // this.show = false
+      // 选择门店 如果由web端实现，开启上面两行
+      alert('选择门店');
+    },
+    consultNow() {
+      alert('咨询！');
+    },
+    toggleShow() {
+      this.show = !this.show;
+    },
+  },
+  components: {
+    hStoreSelect,
+  },
+};
 
 </script>
 <style lang="scss" scoped>
@@ -99,6 +99,7 @@
       text-align: center;
       float: left;
       padding-top: 10px;
+
       i {
         display: inline-block;
         width: 24px;
@@ -114,6 +115,7 @@
         i {
           background-position: -4px -295px;
         }
+
         // p{
         //   color: #ff3344;
         // }

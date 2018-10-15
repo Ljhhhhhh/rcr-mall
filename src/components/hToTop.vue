@@ -5,24 +5,24 @@
 </template>
 <script>
 export default {
-  name: 'toTop',
+  name: 'hToTop',
   props: {
     show: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      iconUrl: 'static/images/to-top_icon.png'
-    }
+      iconUrl: 'static/images/to-top_icon.png',
+    };
   },
   methods: {
     scrollToTop() {
-      this.$emit('scrollToTop')
-    }
-  }
-}
+      this.$emit('scrollToTop');
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
   .to-top_container{

@@ -18,69 +18,69 @@
         <span>{{albumlist.length}}</span>
       </div>
     </div>
-    </transition>
+  </transition>
 </template>
 <script>
-  import {
-    mapGetters
-  } from 'vuex'
-  import hHeader from '@/components/hHeader'
-  export default {
-    name: 'Album',
-    data() {
-      return {
-        activeIndex: 0, // 当前激活的tab
-        albumIndex: 1, // 当前激活的图片
-      }
-    },
-    mounted() {
-      if (!this.albumlist.length || !this.$route.query.index) {
-        this.$router.back()
-      }
-      this.albumIndex = this.$route.query.index
-    },
-    computed: {
-      initialSwipe() {
-        return this.$route.query.index - 1
-      },
-      tabList() {
-        let tabList = []
-        this.albumlist.forEach(album => {
-          let type = album.type
-          if (!tabList.includes(type)) {
-            tabList.push(type)
-          }
-        })
-        return tabList;
-      },
-      ...mapGetters([
-        'albumlist'
-      ])
-    },
-    methods: {
-      changeType(i) {
-        this.activeIndex = i
-        // TODO: 点击tab时激活对应的图片
-        for (let j = 0, len = this.albumlist.length; j < len; j++) {
-          if (this.tabList[i] === this.albumlist[j].type) {
-            this.$refs.album.swipeTo(j)
-            break
-          }
-        }
-      },
-      onChange(index) {
-        this.albumIndex = index + 1;
-        this.tabList.forEach((tab, i) => {
-          if (this.albumlist[index].type === tab) {
-            this.activeIndex = i
-          }
-        })
-      },
-    },
-    components: {
-      hHeader,
+import {
+  mapGetters,
+} from 'vuex';
+import hHeader from '@/components/hHeader';
+export default {
+  name: 'Album',
+  data() {
+    return {
+      activeIndex: 0, // 当前激活的tab
+      albumIndex: 1, // 当前激活的图片
+    };
+  },
+  mounted() {
+    if (!this.albumlist.length || !this.$route.query.index) {
+      this.$router.back();
     }
-  }
+    this.albumIndex = this.$route.query.index;
+  },
+  computed: {
+    initialSwipe() {
+      return this.$route.query.index - 1;
+    },
+    tabList() {
+      let tabList = [];
+      this.albumlist.forEach(album => {
+        let type = album.type;
+        if (!tabList.includes(type)) {
+          tabList.push(type);
+        }
+      });
+      return tabList;
+    },
+    ...mapGetters([
+      'albumlist',
+    ]),
+  },
+  methods: {
+    changeType(i) {
+      this.activeIndex = i;
+      // TODO: 点击tab时激活对应的图片
+      for (let j = 0, len = this.albumlist.length; j < len; j++) {
+        if (this.tabList[i] === this.albumlist[j].type) {
+          this.$refs.album.swipeTo(j);
+          break;
+        }
+      }
+    },
+    onChange(index) {
+      this.albumIndex = index + 1;
+      this.tabList.forEach((tab, i) => {
+        if (this.albumlist[index].type === tab) {
+          this.activeIndex = i;
+        }
+      });
+    },
+  },
+  components: {
+    hHeader,
+  },
+};
 
 </script>
 <style lang="scss" scoped>

@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  name: 'storeSelect',
+  name: 'hStoreSelect',
   created() {
     console.log(this.$route);
   },
@@ -18,20 +18,20 @@ export default {
     show: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
       storeId: -1,
-      storeList: []
-    }
+      storeList: [],
+    };
   },
   methods: {
     setStore() {
-      this.$emit('setedStore', this.storeId)
-    }
-  }
-}
+      this.$emit('setedStore', this.storeId);
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
   .store-select_container{

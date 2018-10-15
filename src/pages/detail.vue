@@ -7,7 +7,7 @@
       <div class="scroll-content">
         <div class="banner" v-if="bannerList.length">
           <swiper :options="swiperOption" ref="mySwiper" @slideChange="bannerChange">
-            <swiper-slide v-for="(banner, index) in bannerList" :key="index" @click.native="preview(index+1)" >
+            <swiper-slide v-for="(banner, index) in bannerList" :key="index" @click.native="preview(index+1)">
               <img :src="banner.url">
             </swiper-slide>
           </swiper>
@@ -231,13 +231,8 @@
     <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
     <div class="fix-top_tab van-hairline--bottom" v-show="topTabActive.state">
       <div class="top-tab_box">
-        <span 
-          class="top-tab_item" 
-          :class="{active:i===topTabActive.index}" 
-          v-for="(tab, i) in topTabElemMap" 
-          :key="i"
-          @click="scrollToElement(i)"
-          >
+        <span class="top-tab_item" :class="{active:i===topTabActive.index}" v-for="(tab, i) in topTabElemMap" :key="i"
+          @click="scrollToElement(i)">
           {{tab.title}}
         </span>
       </div>
@@ -245,231 +240,235 @@
   </div>
 </template>
 <script>
-  import hHeader from '@/components/hHeader'
-  import hTag from '@/components/hTag'
-  import hContentTitle from '@/components/hContentTitle'
-  import hConsult from '@/components/hConsult'
-  import 'swiper/dist/css/swiper.css'
-  import { swiper, swiperSlide } from 'vue-awesome-swiper'
-  import {
-    mapMutations
-  } from 'vuex'
-  import clearupList from '@/utils/clearupAlbumlist'
-  import BScroll from 'better-scroll'
-  import hToTop from '@/components/hToTop'
-  import {fetchCarAlbum} from '@/api/car/carAlbum'
-  export default {
-    name: 'Detail',
-    data() {
-      var me = this;
-      return {
-        topResrvedOffset: 45, // 顶部tab预留高度
-        swiperOption: { // swipe配置
-          loop: true,
-        },
-        bannerIndex: 1,
-        bannerList: [],
-        programList: [{
-            first: 2.39,
-            month: 5519,
-            order: 12,
-          },
-          {
-            first: 2.59,
-            month: 5559,
-            order: 24,
-          },
-          {
-            first: 3.33,
-            month: 9999,
-            order: 6,
-          },
-        ],
-        programActive: 0,
-        carConfiguration: {
-          a: '三厢车',
-          b: '4915/1845/1470mm',
-          c: '2.0L146马力L4',
-          d: 'E-CVT无级变速',
-          e: '前置前驱',
-          f: '油电混合',
-          g: '4.2L/100km',
-          h: '外观奥夫特黑+内饰黑色',
-        },
-        configurationMap: {
-          a: '车身结构',
-          b: '长/宽/高',
-          c: '发动机',
-          d: '变速箱',
-          e: '驱动方式',
-          f: '燃料形式',
-          g: '综合油耗',
-          h: '车辆颜色',
-        },
-        scroll: null,
-        toTopShow: false,
-        topTabActive: {
-          state: false,
-          index: null
-        },
-        topTabElemMap: [
-          {
-            title: '金融方案',
-            elem: '.car-info_program', // 金融方案
-            offsetTop: ''
-          },
-          {
-            title: '车辆信息',
-            elem: '.car-info_configuration', // 车辆信息
-            offsetTop: ''
-          },
-          {
-            title: '购车说明',
-            elem: '.car-info_step', // 购车说明
-            offsetTop: ''
-          },
-          {
-            title: '为您推荐',
-            elem: '.car-recommend', // 为您推荐
-            offsetTop: ''
-          },
-        ]
+import hHeader from '@/components/hHeader';
+import hTag from '@/components/hTag';
+import hContentTitle from '@/components/hContentTitle';
+import hConsult from '@/components/hConsult';
+import 'swiper/dist/css/swiper.css';
+import {
+  swiper,
+  swiperSlide,
+} from 'vue-awesome-swiper';
+import {
+  mapMutations,
+} from 'vuex';
+import clearupList from '@/utils/clearupAlbumlist';
+import BScroll from 'better-scroll';
+import hToTop from '@/components/hToTop';
+import {
+  fetchCarAlbum,
+} from '@/api/car/carAlbum';
+export default {
+  name: 'Detail',
+  data() {
+    return {
+      topResrvedOffset: 45, // 顶部tab预留高度
+      swiperOption: { // swipe配置
+        loop: true,
+      },
+      bannerIndex: 1,
+      bannerList: [],
+      programList: [{
+        first: 2.39,
+        month: 5519,
+        order: 12,
+      },
+      {
+        first: 2.59,
+        month: 5559,
+        order: 24,
+      },
+      {
+        first: 3.33,
+        month: 9999,
+        order: 6,
+      },
+      ],
+      programActive: 0,
+      carConfiguration: {
+        a: '三厢车',
+        b: '4915/1845/1470mm',
+        c: '2.0L146马力L4',
+        d: 'E-CVT无级变速',
+        e: '前置前驱',
+        f: '油电混合',
+        g: '4.2L/100km',
+        h: '外观奥夫特黑+内饰黑色',
+      },
+      configurationMap: {
+        a: '车身结构',
+        b: '长/宽/高',
+        c: '发动机',
+        d: '变速箱',
+        e: '驱动方式',
+        f: '燃料形式',
+        g: '综合油耗',
+        h: '车辆颜色',
+      },
+      scroll: null,
+      toTopShow: false,
+      topTabActive: {
+        state: false,
+        index: null,
+      },
+      topTabElemMap: [{
+        title: '金融方案',
+        elem: '.car-info_program', // 金融方案
+        offsetTop: '',
+      },
+      {
+        title: '车辆信息',
+        elem: '.car-info_configuration', // 车辆信息
+        offsetTop: '',
+      },
+      {
+        title: '购车说明',
+        elem: '.car-info_step', // 购车说明
+        offsetTop: '',
+      },
+      {
+        title: '为您推荐',
+        elem: '.car-recommend', // 为您推荐
+        offsetTop: '',
+      },
+      ],
+    };
+  },
+  created() {
+    this.getBannerList();
+  },
+  mounted() {
+    this._initPage();
+  },
+  watch: {
+    $route: function (to, from) {
+      if (from.name === 'storeSelect') {
+        this.show = true;
       }
     },
-    created() {
-      this.getBannerList()
+  },
+  computed: {
+    swiper() {
+      return this.$refs.mySwiper.swiper;
     },
-    mounted() {
-      this._initPage()
+  },
+  methods: {
+    async getBannerList() {
+      let res = await fetchCarAlbum();
+      // 整理banner列表，使其按照type归类
+      this.bannerList = clearupList(res.items);
     },
-    watch: {
-      $route: function (to, from) {
-        if (from.name = 'storeSelect') {
-          this.show = true;
-        }
-      }
+    preview(index) {
+      console.log('index:', index);
+      this.set_albumlist(this.bannerList);
+      this.$router.push({
+        name: 'Album',
+        query: {
+          index,
+        },
+      });
     },
-    computed: {
-      swiper() {
-        return this.$refs.mySwiper.swiper;
-      }
-    },
-    methods: {
-      async getBannerList() {
-        let res = await fetchCarAlbum()
-        // 整理banner列表，使其按照type归类
-        this.bannerList = clearupList(res.items)
-      },
-      preview(index) {
-        console.log('index:', index);
-        this.set_albumlist(this.bannerList)
-        this.$router.push({
-          name: 'Album',
-          query: {
-            index
-          }
-        })
-      },
-      setProgram(index) {
-        let arr = document.querySelectorAll('.tab-content_item')
-        Array.from(arr).forEach((item, i) => {
-          if (i > index) {
-            arr[i].style.transform = 'translateX(110%)'
-          } else if (i < index) {
-            arr[i].style.transform = 'translateX(-110%)'
-          } else {
-            arr[i].style.transform = 'none'
-          }
-        })
-        this.programActive = index;
-      },
-      slideChangeTransitionStart() {
-        console.log(123);
-      },
-      bannerChange() {
-        this.bannerIndex = this.swiper.realIndex + 1
-      },
-      share() {
-        alert('APP实现分享功能')
-      },
-      showProjectDetail() {
-        alert('查看方案详情')
-      },
-      showAllConfig() {
-        alert('查看全部配置')
-      },
-      infoDetailShow() {
-        alert('展示活动详情')
-      },
-      scrollToElement(index) {
-        if (!index && index !== 0) {
-          this.scroll.scrollTo(0, 0, 300)
+    setProgram(index) {
+      let arr = document.querySelectorAll('.tab-content_item');
+      Array.from(arr).forEach((item, i) => {
+        if (i > index) {
+          arr[i].style.transform = 'translateX(110%)';
+        } else if (i < index) {
+          arr[i].style.transform = 'translateX(-110%)';
         } else {
-           this.scroll.scrollToElement(this.topTabElemMap[index]['elem'], 300, 0, -this.topResrvedOffset)
+          arr[i].style.transform = 'none';
         }
-      },
-      _scroll(pos) {
-          // 初始化每个元素对应的滚动高度
-          if (!this.topTabElemMap[0]['offsetTop']) {
-            this.topTabElemMap.forEach((item, index) => {
-              let offsetTop = document.querySelector(item.elem).offsetTop
-              item.offsetTop = offsetTop
-            })
-          }
+      });
+      this.programActive = index;
+    },
+    slideChangeTransitionStart() {
+      console.log(123);
+    },
+    bannerChange() {
+      this.bannerIndex = this.swiper.realIndex + 1;
+    },
+    share() {
+      alert('APP实现分享功能');
+    },
+    showProjectDetail() {
+      alert('查看方案详情');
+    },
+    showAllConfig() {
+      alert('查看全部配置');
+    },
+    infoDetailShow() {
+      alert('展示活动详情');
+    },
+    scrollToElement(index) {
+      if (!index && index !== 0) {
+        this.scroll.scrollTo(0, 0, 300);
+      } else {
+        this.scroll.scrollToElement(this.topTabElemMap[index]['elem'], 300, 0, -this.topResrvedOffset);
+      }
+    },
+    _scroll(pos) {
+      // 初始化每个元素对应的滚动高度
+      if (!this.topTabElemMap[0]['offsetTop']) {
+        this.topTabElemMap.forEach((item, index) => {
+          let offsetTop = document.querySelector(item.elem).offsetTop;
+          item.offsetTop = offsetTop;
+        });
+      }
 
-          // 回到顶部按钮的显隐控制
-          if (-pos.y > this.topTabElemMap[0]['offsetTop']) {
-            this.toTopShow = true
-          } else {
-            this.toTopShow = false
-          }
-          let activeIndex = -1
-          this.topTabElemMap.forEach((item, index) => {
-            let scrollY = -pos.y
-            if (scrollY > item.offsetTop - this.topResrvedOffset - 5) {
-              activeIndex = index
-            }
-          })
-          this.topTabActive.index = activeIndex
-      },
-      _initPage() {
-        // 设置scroll滚动
-        this.scroll = new BScroll('.scroll-wrap', {
-            click: true,
-            probeType: 2,
-        })
-        this.scroll.on('scroll', (pos) => {
-          this._scroll(pos)
-        })
-        this.scroll.on('scrollEnd', (pos) => {
-          this._scroll(pos)
-          if (this.topTabActive.index < 0) {
-            this.topTabActive.state = false
-          } else {
-            this.topTabActive.state = true
-          }
-        })
+      // 回到顶部按钮的显隐控制
+      if (-pos.y > this.topTabElemMap[0]['offsetTop']) {
+        this.toTopShow = true;
+      } else {
+        this.toTopShow = false;
+      }
+      let activeIndex = -1;
+      this.topTabElemMap.forEach((item, index) => {
+        let scrollY = -pos.y;
+        if (scrollY > item.offsetTop - this.topResrvedOffset - 5) {
+          activeIndex = index;
+        }
+      });
+      this.topTabActive.index = activeIndex;
+    },
+    _initPage() {
+      // 设置scroll滚动
+      this.scroll = new BScroll('.scroll-wrap', {
+        click: true,
+        probeType: 2,
+      });
+      this.scroll.on('scroll', (pos) => {
+        this._scroll(pos);
+      });
+      this.scroll.on('scrollEnd', (pos) => {
+        this._scroll(pos);
+        if (this.topTabActive.index < 0) {
+          this.topTabActive.state = false;
+        } else {
+          this.topTabActive.state = true;
+        }
+      });
     },
     ...mapMutations({
-      set_albumlist: 'SET_ALBUMLIST'
-      }),
-    },
-    components: {
-      hHeader,
-      hTag,
-      hContentTitle,
-      hConsult,
-      swiper, swiperSlide,
-      hToTop
-    },
-  };
+      set_albumlist: 'SET_ALBUMLIST',
+    }),
+  },
+  components: {
+    hHeader,
+    hTag,
+    hContentTitle,
+    hConsult,
+    swiper,
+    swiperSlide,
+    hToTop,
+  },
+};
 
 </script>
 <style lang="scss" scoped>
   .scroll-wrap {
     width: 100%;
     height: calc(100vh - 104px);
-    overflow: hidden;  
+    overflow: hidden;
   }
 
   .share {
@@ -803,7 +802,8 @@
       }
     }
   }
-  .fix-top_tab{
+
+  .fix-top_tab {
     position: fixed;
     top: 44px;
     left: 0;
@@ -812,12 +812,14 @@
     padding: 0 rem(15);
     box-sizing: border-box;
     background: #FFF;
-    .top-tab_box{
+
+    .top-tab_box {
       display: flex;
-      justify-content:space-between;
+      justify-content: space-between;
       height: 100%;
       align-items: center;
-      .top-tab_item{
+
+      .top-tab_item {
         flex: 1;
         text-align: center;
         max-width: 4em;
@@ -825,7 +827,8 @@
         line-height: 40px;
         font-size: rem(15);
         color: $font_theme;
-        &.active{
+
+        &.active {
           color: $color_theme;
           background: linear-gradient(left, $color_theme, $color_theme) no-repeat;
           background-position: bottom center;
@@ -834,4 +837,5 @@
       }
     }
   }
+
 </style>

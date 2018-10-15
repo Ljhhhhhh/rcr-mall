@@ -2,10 +2,10 @@
   <span :style="theme">{{tag}}</span>
 </template>
 <script>
-  export default {
-    name: 'tag',
-    props: ['tag', 'theme']
-  }
+export default {
+  name: 'hTag',
+  props: ['tag', 'theme'],
+};
 
 </script>
 <style lang="scss" scoped>

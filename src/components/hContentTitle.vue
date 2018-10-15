@@ -8,8 +8,8 @@
 <script>
 export default {
   name: 'hContentTitle',
-  props: ['title']
-}
+  props: ['title'],
+};
 </script>
 <style lang="scss" scoped>
   .title{
@@ -18,7 +18,7 @@ export default {
     text-align: center;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     font-size: rem(15);
     line-height: rem(15);
     color: $font_theme;
