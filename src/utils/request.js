@@ -1,17 +1,28 @@
 import axios from 'axios';
+import md5 from 'blueimp-md5';
+// import qs from 'qs';
 
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 5000, // request timeout
+  // transformRequest: [function (data) {
+  //   data = qs.stringify(data);
+  //   console.log('data:', data);
+  //   return data;
+  // }],
 });
-
+const SECRECT = '1234567890'; // y8q6wjtz3j1emtbwqnhipjgkpynpvmhh
 // request interceptor
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    // config.headers['X-Token'] = 'user token';
+    config.headers['crossorigin'] = 'web';
+    let params = JSON.stringify(config.params.data);
+    config.headers['sign'] = params ? md5(params + '&' + SECRECT) : md5(SECRECT);
+    config.headers['token'] = 't1umu5p564ew3u94835995x8afsez741'; // 暂时用这个，登录接口完成之后修改
+    // }
     return config;
   },
   error => {
@@ -26,7 +37,7 @@ service.interceptors.response.use(
   // response => response.data,
   response => {
     const res = response.data;
-    if (res.code !== 200) {
+    if (res.errno !== 0) {
       console.warn('获取数据可能存在错误，返回code不为200');
       return res;
     } else {

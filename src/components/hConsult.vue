@@ -1,9 +1,9 @@
 <template>
   <div class="consult van-hairline--top">
     <div class="content">
-      <div class="heart" @click="setHeart" :class="{'yes': heart.state}">
+      <div class="heart" @click="setHeart" :class="{'yes': following}">
         <i></i>
-        <p>{{heart.text}}</p>
+        <p>{{followState}}</p>
       </div>
       <van-button type="primary" class="btn" @click="toggleShow">立即咨询</van-button>
     </div>
@@ -39,20 +39,32 @@
 import hStoreSelect from '@/components/hStoreSelect';
 export default {
   name: 'hConsult',
+  props: {
+    following: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    followState() {
+      return this.following ? '已关注' : '关注';
+    },
+  },
   data() {
     return {
       show: false,
       storeSelect: false,
-      heart: {
-        state: false,
-        text: '关注',
-      },
+      // heart: {
+      //   state: false,
+      //   text: '关注',
+      // },
     };
   },
   methods: {
     setHeart() {
-      this.heart.text = this.heart.state ? '关注' : '已关注';
-      this.heart.state = !this.heart.state;
+      // this.heart.text = this.heart.state ? '关注' : '已关注';
+      // this.heart.state = !this.heart.state;
+      this.$emit('changeFollow');
     },
     setStore(id) {
       this.show = true;
@@ -76,7 +88,6 @@ export default {
     hStoreSelect,
   },
 };
-
 </script>
 <style lang="scss" scoped>
   .consult {
@@ -239,5 +250,4 @@ export default {
       }
     }
   }
-
 </style>

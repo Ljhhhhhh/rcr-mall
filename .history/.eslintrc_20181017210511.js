@@ -1,6 +1,7 @@
 // https://eslint.org/docs/user-guide/configuring
 
-module.exports = {
+// module.exports =
+{
   root: true,
   parserOptions: {
     parser: 'babel-eslint'
@@ -29,4 +30,4 @@ module.exports = {
     "space-before-function-paren": [0, "always"],
     'comma-dangle': ['error', 'always-multiline']
   }
-}
+// }

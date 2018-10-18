@@ -10,7 +10,9 @@ export default {
 </script>
 <style lang="scss" scoped>
   span {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     background: $color_theme;
     color: #FFF;
     width: rem(60);

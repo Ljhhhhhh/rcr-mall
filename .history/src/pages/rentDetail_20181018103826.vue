@@ -142,8 +142,8 @@ export default {
   },
   methods: {
     async getCarDetail() {
-      let res = await carDetail(this.carId).data;
-      console.log(res);
+      let res = await carDetail(this.carId);
+      console.log(res.data);
     },
     async getBannerList() {
       let res = await fetchCarAlbum();

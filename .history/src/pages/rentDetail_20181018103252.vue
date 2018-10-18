@@ -99,7 +99,7 @@ import hTag from '@/components/hTag';
 import {
   fetchCarAlbum,
 } from '@/api/car/carAlbum';
-import {carDetail} from '@/api/car/carDetail';
+import {carDetail} from '@/api/car/carDetail'
 import 'swiper/dist/css/swiper.css';
 import {
   swiper,
@@ -142,8 +142,8 @@ export default {
   },
   methods: {
     async getCarDetail() {
-      let res = await carDetail(this.carId).data;
-      console.log(res);
+      let res= await carDetail(this.carId),
+      console.log(res.data)
     },
     async getBannerList() {
       let res = await fetchCarAlbum();

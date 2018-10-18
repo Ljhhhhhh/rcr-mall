@@ -2,5 +2,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"prod"',
-  BASE_API: '"localhost"'
+  BASE_API: '"http://testapi.chetianyi.com/api/"'
 }

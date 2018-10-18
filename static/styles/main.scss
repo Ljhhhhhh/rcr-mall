@@ -40,7 +40,7 @@ $icon_sprite: url('~static/images/css_sprites.png') no-repeat;
 
 .container {
   background: #fff;
-  font-size: 14px;
+  font-size: rem(14);
   width: 100%;
   position: relative;
   top: 0;

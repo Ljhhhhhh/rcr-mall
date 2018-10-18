@@ -12,7 +12,7 @@
 export default {
   name: 'hStoreSelect',
   created() {
-    console.log(this.$route);
+    // console.log(this.$route);
   },
   props: {
     show: {

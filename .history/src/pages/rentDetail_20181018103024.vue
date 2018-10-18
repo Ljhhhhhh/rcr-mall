@@ -99,7 +99,7 @@ import hTag from '@/components/hTag';
 import {
   fetchCarAlbum,
 } from '@/api/car/carAlbum';
-import {carDetail} from '@/api/car/carDetail';
+import {}
 import 'swiper/dist/css/swiper.css';
 import {
   swiper,
@@ -109,7 +109,6 @@ export default {
   name: 'rentDetail',
   data() {
     return {
-      carId: 14,
       scroll: null,
       swiperOption: { // swipe配置
         loop: true,
@@ -129,8 +128,7 @@ export default {
     };
   },
   created() {
-    // this.getBannerList();
-    this.getCarDetail();
+    this.getBannerList();
   },
   mounted() {
     this._initPage();
@@ -141,10 +139,6 @@ export default {
     },
   },
   methods: {
-    async getCarDetail() {
-      let res = await carDetail(this.carId).data;
-      console.log(res);
-    },
     async getBannerList() {
       let res = await fetchCarAlbum();
       // 整理banner列表，使其按照type归类
