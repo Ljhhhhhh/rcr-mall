@@ -1,25 +1,32 @@
 const carSelectOptions = [{
   name: '默认排序',
   currentName: null,
-  class: 'orderby-select_default',
+  search: 'stored',
   active: 0,
   options: [{
     tag: '默认排序',
+    filed: '',
+    order: '',
   },
   {
     tag: '销量最高',
+    filed: 'sale',
+    order: 'desc',
   },
   {
     tag: '首付最低',
-  },
-  {
-    tag: '月供最低',
+    filed: 'payment',
+    order: 'asc',
   },
   {
     tag: '车价最低',
+    filed: 'price',
+    order: 'asc',
   },
   {
     tag: '车价最高',
+    filed: 'price',
+    order: 'desc',
   },
   ],
 },
@@ -27,14 +34,14 @@ const carSelectOptions = [{
   name: '品牌',
   currentName: null,
   active: null,
-  class: 'orderby-select_brand',
+  search: 'brand',
   options: [],
 },
 {
   name: '首付',
   currentName: null,
   active: null,
-  class: 'orderby-select_first',
+  search: 'downPay',
   options: [{
     tag: '1万以内',
   },
@@ -58,7 +65,7 @@ const carSelectOptions = [{
 {
   name: '车价',
   currentName: null,
-  class: 'orderby-select_price',
+  search: 'price',
   active: null,
   options: [{
     tag: '10万以内',

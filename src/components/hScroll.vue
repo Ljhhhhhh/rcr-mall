@@ -51,7 +51,6 @@ export default {
         probeType: this.probeType,
         click: this.click,
       });
-
       if (this.listenScroll) {
         let me = this;
         this.scroll.on('scroll', (pos) => {
@@ -61,12 +60,12 @@ export default {
 
       if (this.pullup) {
         this.scroll.on('scrollEnd', () => {
-          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
-            this.$emit('scrollToEnd');
-          }
+          this.$emit('scrollToEnd');
+          // if (this.scroll.y <= (this.scroll.maxScrollY + 60)) {
+          //   this.$emit('scrollToEnd');
+          // }
         });
       }
-
       if (this.beforeScroll) {
         this.scroll.on('beforeScrollStart', () => {
           this.$emit('beforeScroll');

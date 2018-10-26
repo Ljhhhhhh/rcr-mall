@@ -208,7 +208,7 @@ export default {
     .list-shortcut {
       position: absolute;
       z-index: 30;
-      right: 0;
+      right: rem(5);
       top: 50%;
       transform: translateY(-50%);
       width: 20px;
@@ -216,10 +216,10 @@ export default {
       text-align: center;
 
       .item {
-        padding: 3px;
+        padding: 2px;
         line-height: 1;
         color: #666;
-        font-size: rem(14);
+        font-size: rem(13);
 
         &.current {
           color: $color_theme;

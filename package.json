@@ -26,6 +26,7 @@
     "vue-carousel": "^0.14.0",
     "vue-lazyload": "^1.2.6",
     "vue-router": "^3.0.1",
+    "vue-svg-icon": "^1.2.9",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

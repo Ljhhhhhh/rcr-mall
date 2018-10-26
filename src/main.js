@@ -11,7 +11,9 @@ import 'static/styles/main.scss';
 import * as filters from './filters'; // global filters
 import './mock'; // simulation data
 import hHeader from '@/components/hHeader';
+import Icon from 'vue-svg-icon/Icon.vue';
 
+Vue.component('icon', Icon);
 Vue.component('hHeader', hHeader);
 // options 为可选参数，无则不传
 Vue.use(Lazyload);

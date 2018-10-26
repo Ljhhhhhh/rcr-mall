@@ -9,7 +9,7 @@
         <i class="triangle-down_icon"></i>
       </div>
       <div class="car-search">
-        <van-search v-model="value" placeholder="请输入搜索关键词" show-action @search="onSearch">
+        <van-search v-model="searchText" placeholder="请输入搜索关键词" show-action @blur="onSearch" @search="onSearch">
           <div slot="action" @click="onSearch">搜索</div>
         </van-search>
       </div>
@@ -35,6 +35,7 @@
             </ul>
             <div class="brandScrollWrap" v-show="currentOpenSelect === 1">
               <h-list-view :len="currentOpenSelect" :data="selectList[1].options" @select="brandSelected"></h-list-view>
+              <div class="reset-brand_btn" @click="brandSelected({name: null, id: null})">重置</div>
             </div>
             <ul class="orderby-select_first" v-show="currentOpenSelect === 2">
               <li v-for="(option, i) in selectList[2].options" :key="i" :class="{selected:i===selectList[2].active}" @click="optionChange(2, i)">{{option.tag}}</li>
@@ -45,30 +46,35 @@
         </div>
       </transition>
     </div>
-    <h-scroll class="scroll-box">
+    <h-scroll class="scroll-box" :listenScroll="true" @scroll="loadMore" :pullup="true" @scrollToEnd="scrollToEnd" ref="scrollCar">
       <div class="car-list_box">
-        <div class="car-list_item van-hairline--bottom" v-for="(car, index) in carList" :key="index">
+        <div class="car-list_item van-hairline--bottom" v-for="(car, index) in carList" :key="index" @click="carDetail(car.id)">
           <div class="car-thumb">
             <p>{{car.acts}}</p>
-            <img :src="car.thumb">
+            <img v-lazy="car.thumb">
           </div>
           <div class="car-info">
             <p class="title">{{car.title}} </p>
-            <p class="price">厂商指导价：{{car.price}}万</p>
-            <p class="highlight">首付<span>{{car.payment}}</span>万开回家</p>
+            <p class="price">厂商指导价：{{car.price | formatPrice}}元</p>
+            <p class="highlight">首付<span>{{car.payment | formatPrice}}</span>元开回家</p>
           </div>
         </div>
+      </div>
+      <div class="load-state_msg" v-show="loadMoreHeight.loading === 2">
+        <span>{{loadMoreHeight.msg}}</span>
+        <icon name="loading" scale="1.5" class="load-state_icon" v-if="!loadMoreHeight.loadComplete"></icon>
+        <icon name="stop" scale="1.5" class="load-complete_icon" v-else></icon>
       </div>
     </h-scroll>
     <transition name="van-fade">
       <div class="modal" @click="currentOpenSelect = -1" v-show="currentOpenSelect>-1">Fade</div>
     </transition>
-    <transition name="slide">
+    <!-- <transition name="slide">
       <router-view class="router-view_fullpage"></router-view>
-    </transition>
+    </transition> -->
     <transition name="topin">
       <div class="city-comp-box" v-show="cityObj.show">
-        <!-- <h-city-select></h-city-select> -->
+        <h-city-select></h-city-select>
       </div>
     </transition>
   </div>
@@ -87,15 +93,25 @@ export default {
       carList: [],
       selectList: null,
       currentOpenSelect: -1,
-      value: '',
       cityObj: {
         show: false,
       },
       resetTime: null,
-      responseData: {
+      defaultResponseData: {
         lx: 'news',
-        size: 10,
+        size: 5,
         page: 1,
+      },
+      selectResponseData: {},
+      searchText: '',
+      loadMoreHeight: {
+        scrollBoxHeight: null,
+        carListBoxHeight: null,
+        // loading: false,
+        loading: -1,
+        loadComplete: false,
+        carTotal: 0,
+        msg: '加载中',
       },
     };
   },
@@ -103,10 +119,50 @@ export default {
     this._initPage();
   },
   methods: {
+    carDetail(id) {
+      console.log(id);
+      this.$router.push({
+        name: 'Detail',
+        params: {
+          id,
+        },
+      });
+    },
+    loadMore(pos) {
+      if (!this.loadMoreHeight.scrollBoxHeight) {
+        this.loadMoreHeight.scrollBoxHeight = document.querySelector('.scroll-box').offsetHeight;
+      }
+      if (!this.loadMoreHeight.carListBoxHeight) {
+        console.log('...');
+        this.loadMoreHeight.carListBoxHeight = document.querySelector('.car-list_box').offsetHeight;
+      }
+      let scrollBoxHeight = this.loadMoreHeight.scrollBoxHeight;
+      let carListBoxHeight = this.loadMoreHeight.carListBoxHeight;
+      // if (pos.y < scrollBoxHeight - carListBoxHeight - 60) {
+      //   this.loadMoreHeight.loading = 1;
+      // }
+      if (pos.y < scrollBoxHeight - carListBoxHeight - 60 && this.loadMoreHeight.loading < 0) {
+        this.loadMoreHeight.loading = 2;
+        if (this.defaultResponseData.size * this.defaultResponseData.page >= this.loadMoreHeight.carTotal) {
+          this.loadMoreHeight.loadComplete = true;
+          this.loadMoreHeight.msg = '已加载全部';
+          return false;
+        }
+        this.defaultResponseData.page = this.defaultResponseData.page + 1;
+        this.getCarList(true);
+      }
+    },
+    scrollToEnd() {
+      this.loadMoreHeight.loading = -1;
+      console.log(this.loadMoreHeight.loading);
+      this.$refs.scrollCar.refresh();
+    },
     resetSelect() {
       let resetDom = this.$refs.reset;
-      resetDom.style.transition = 'all 0.3s';
+      resetDom.style.transition = 'all 1s ease-out';
       addClass(resetDom, 'circle');
+      this.selectResponseData = {};
+      this.getCarList();
       // console.log();
       this.selectList.forEach((item, index) => {
         item.currentName = null;
@@ -119,24 +175,39 @@ export default {
       this.resetTime = setTimeout(() => {
         resetDom.style.transition = 'none';
         removeClass(resetDom, 'circle');
-      }, 300);
+      }, 1000);
     },
     brandSelected(item) {
       console.log(item);
       this.selectList[1].currentName = item.name;
+      this.selectResponseData.brand = item.id;
       this.currentOpenSelect = -1;
+      this.defaultResponseData.page = 1;
+      this.getCarList();
     },
     optionChange(selectIndex, optionIndex) {
-      if (this.selectList[selectIndex].active === optionIndex) {
-        this.selectList[selectIndex].active = null;
-        this.selectList[selectIndex].currentName = null;
+      let currentSelect = this.selectList[selectIndex];
+      if (currentSelect.active === optionIndex) {
+        currentSelect.active = null;
+        currentSelect.currentName = null;
+        this.selectResponseData[currentSelect.search] = null;
         if (selectIndex === 0) {
-          this.selectList[selectIndex].active = 0;
+          currentSelect.active = 0;
+          this.selectResponseData.stored = '';
+          this.selectResponseData.order = '';
         }
       } else {
-        this.selectList[selectIndex].active = optionIndex;
-        this.selectList[selectIndex].currentName = this.selectList[selectIndex].options[optionIndex].tag;
+        currentSelect.active = optionIndex;
+        currentSelect.currentName = currentSelect.options[optionIndex].tag;
+        if (selectIndex === 0) {
+          this.selectResponseData.stored = currentSelect.options[optionIndex].filed;
+          this.selectResponseData.order = currentSelect.options[optionIndex].order;
+        } else {
+          this.selectResponseData[currentSelect.search] = currentSelect.options[optionIndex].tag;
+        }
       }
+      this.defaultResponseData.page = 1;
+      this.getCarList();
       this.currentOpenSelect = -1;
     },
     changeSelect(index) {
@@ -150,7 +221,7 @@ export default {
       this.cityObj.show = !this.cityObj.show;
     },
     onSearch() {
-      console.log(123);
+      this.getCarList();
     },
     getCarSelectOptions() {
       this.selectList = carSelectOptions;
@@ -191,14 +262,23 @@ export default {
       let searchHeight = this.$refs.search.offsetHeight;
       let selectHeight = this.$refs.select[0].offsetHeight;
       let brandBox = this.$refs.options;
-      let maxHeight = boxHeight - searchHeight - selectHeight - 50 + 'px';
+      let maxHeight = boxHeight - searchHeight - selectHeight - 30 + 'px';
       brandBox.style.maxHeight = maxHeight;
       document.querySelector('.brandScrollWrap').style.height = maxHeight;
     },
-    async getCarList() {
-      let carList = await fetchCar(this.responseData);
-      this.carList = carList.data.rows;
-      console.log(carList);
+    async getCarList(loadMore = false) {
+      // let defaultResponse = this.defaultResponseData;
+      let response = Object.assign({}, this.defaultResponseData, this.selectResponseData, {searchText: this.searchText});
+      let carList = await fetchCar(response);
+      // this.loadMoreHeight.loading = false;
+      if (!loadMore) {
+        this.carList = carList.data.rows;
+        this.loadMoreHeight.carTotal = carList.data.total;
+      } else {
+        this.loadMoreHeight.loading = 1;
+        console.log('loadmore carlist');
+        this.carList = this.carList.concat(carList.data.rows);
+      }
     },
     _initPage() {
       this.getCarList();
@@ -302,7 +382,7 @@ export default {
         max-width: rem(30);
         text-align: center;
         &.circle{
-          transform: rotate(360deg);
+          transform: rotate(720deg);
         }
         img{
           vertical-align: middle;
@@ -317,16 +397,18 @@ export default {
       top: 40px;
       left: 0;
       right: 0;
-      border-right: rem(15) solid #FFF;
-      border-left: rem(15) solid #FFF;
+      border-right: rem(0.1) solid #FFF;
+      border-left: rem(0.1) solid #FFF;
       width: auto;
       height: auto;
       z-index: 3;
-
       ul {
         width: 100%;
         height: auto;
         background: #FFF;
+        border-right: rem(14) solid #FFF;
+        border-left: rem(14) solid #FFF;
+        box-sizing: border-box;
         &.orderby-select_default {
           li {
             display: flex;
@@ -375,6 +457,17 @@ export default {
         width: 100%;
         overflow: hidden;
         background: red;
+        position: relative;
+        .reset-brand_btn{
+          position: absolute;
+          right: rem(15);
+          top: 0;
+          line-height: 30px;
+          padding: 0 rem(10);
+          background: $color_theme;
+          color: #FFF;
+          border-radius: rem(3);
+        }
       }
     }
   }
@@ -386,11 +479,33 @@ export default {
     position: absolute;
     top: 85px;
     bottom: 0;
+    .load-state_msg{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      text-align: center;
+      line-height: 30px;
+      z-index: 1;
+      span{
+        line-height: 30px;
+        vertical-align: middle;
+      }
+      .load-state_icon{
+        animation: rotate 1s linear infinite;
+      }
+      .load-complete_icon, .load-state_icon{
+        line-height: 30px;
+        vertical-align: middle;
+      }
+    }
   }
 
   .car-list_box {
     width: 100%;
     height: auto;
+    z-index: 2;
+    background: #FFF;
 
     .car-list_item {
       width: auto;
@@ -400,6 +515,8 @@ export default {
       align-items: center;
       margin: 0 rem(15);
       padding: 20px 0;
+      z-index: 3;
+      background: #FFF;
 
       .car-thumb {
         width: rem(135);
@@ -449,6 +566,8 @@ export default {
 
           span {
             font-size: rem(20);
+            display: inline-block;
+            padding: 0 rem(3);
           }
         }
       }

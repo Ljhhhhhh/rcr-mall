@@ -37,6 +37,7 @@
 </template>
 <script>
 import hStoreSelect from '@/components/hStoreSelect';
+import {OsAction} from '@/utils/contactOs';
 export default {
   name: 'hConsult',
   props: {
@@ -75,7 +76,13 @@ export default {
       // this.storeSelect = true
       // this.show = false
       // 选择门店 如果由web端实现，开启上面两行
-      alert('选择门店');
+      let contactObj = {
+        msg: 'select store……',
+      };
+      let getOs = OsAction(contactObj);
+      console.log(getOs);
+      // webAction(contactObj);
+      // alert('选择门店');
     },
     consultNow() {
       alert('咨询！');

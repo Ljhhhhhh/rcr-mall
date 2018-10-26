@@ -14,12 +14,13 @@ export default new Router({
       name: 'carList',
       component: () => import('@/pages/new/list'),
       children: [
-        {
-          path: 'detail',
-          name: 'Detail',
-          component: () => import('@/pages/new/detail'),
-        },
+
       ],
+    },
+    {
+      path: '/car-detail',
+      name: 'Detail',
+      component: () => import('@/pages/new/detail'),
     },
     {
       path: '/rent',

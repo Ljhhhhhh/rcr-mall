@@ -1,4 +1,5 @@
 <template>
+<!-- <transition name="slide"> -->
   <div class="container detail">
     <h-header title="车辆详情">
       <i class="share" slot="right" @click="share"></i>
@@ -101,7 +102,7 @@
         <div class="car-recommend">
           <h-content-title title="为你推荐"></h-content-title>
           <div class="recommend-list_box">
-            <div class="recommend-list van-hairline--surround"  v-for="(recommend, index) in recommendList" :key="index">
+            <div class="recommend-list van-hairline--surround"  v-for="(recommend, index) in recommendList" :key="index" @click="recommendCar(recommend.id)">
               <p>{{recommend.tags}}</p>
               <img :src="recommend.thumb">
               <div>
@@ -126,6 +127,7 @@
       </div>
     </div>
   </div>
+<!-- </transition> -->
 </template>
 <script>
 import hTag from '@/components/hTag';
@@ -144,6 +146,7 @@ import BScroll from 'better-scroll';
 import hToTop from '@/components/hToTop';
 import {carDetail} from '@/api/car/carDetail';
 import {changeFollow} from '@/api/car/carFollow';
+// import {OsAction} from '@/utils/contactOs';
 
 export default {
   name: 'Detail',
@@ -200,10 +203,12 @@ export default {
     };
   },
   created() {
-    this.getCarDetail();
+    this.getCarId() && this.getCarDetail();
+    console.log(this.$route.params);
   },
   mounted() {
     this._initPage();
+    console.log('mounted:', window.carId);
   },
   watch: {
     $route: function (to, from) {
@@ -218,6 +223,22 @@ export default {
     },
   },
   methods: {
+    getCarId() {
+      console.log('getCarId:', window.carId);
+      this.carId = this.$route.params.id || window.carId;
+      if (!this.carId) {
+        this.$router.push({
+          path: '/car',
+        });
+        return false;
+      }
+      return true;
+    },
+    recommendCar(id) {
+      this.carId = id;
+      this.getCarDetail();
+      this.scroll.scrollTo(0, 0, 300);
+    },
     async getCarDetail() {
       let res = await carDetail(this.carId); // 12是车的ID
       // 整理banner列表，使其按照type归类
@@ -233,7 +254,7 @@ export default {
         content: data.content,
         article: data.article.content,
         actives: data.acts,
-        color: mode.colors.split(',').join('、'),
+        color: mode.colors ? mode.colors.split(',').join('、') : '',
       };
       this.carConfiguration = {
         discharge_standard: mode.discharge_standard,
