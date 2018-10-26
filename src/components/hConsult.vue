@@ -143,7 +143,7 @@ export default {
         color: $font_theme;
         font-size: rem(10);
         line-height: rem(10);
-        margin-top: 6px;
+        margin-top: 3px;
         transition: all .3s ease;
       }
     }
