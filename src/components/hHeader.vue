@@ -23,6 +23,10 @@ export default {
       type: String,
       required: true,
     },
+    headerShow: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     back() {

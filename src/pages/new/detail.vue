@@ -1,7 +1,8 @@
 <template>
 <!-- <transition name="slide"> -->
   <div class="container detail">
-    <h-header title="车辆详情">
+    <!-- {{uaInfo}} -->
+    <h-header title="车辆详情" v-if="!fromApp">
       <i class="share" slot="right" @click="share"></i>
     </h-header>
     <div class="scroll-wrap">
@@ -118,7 +119,7 @@
       <h-consult @changeFollow="changeFollow" :following="carInfo.follow"></h-consult>
     </keep-alive>
     <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
-    <div class="fix-top_tab van-hairline--bottom" v-show="topTabActive.state">
+    <div class="fix-top_tab van-hairline--bottom" :class="{'from-app': !uaInfo}" v-show="topTabActive.state">
       <div class="top-tab_box">
         <span class="top-tab_item" :class="{active:i===topTabActive.index}" v-for="(tab, i) in topTabElemMap" :key="i"
           @click="scrollToElement(i)">
@@ -139,7 +140,7 @@ import {
   swiperSlide,
 } from 'vue-awesome-swiper';
 import {
-  mapMutations,
+  mapMutations, mapGetters,
 } from 'vuex';
 import clearupList from '@/utils/clearupAlbumlist';
 import BScroll from 'better-scroll';
@@ -200,11 +201,11 @@ export default {
           offsetTop: '',
         },
       ],
+      uaInfo: null,
     };
   },
   created() {
     this.getCarId() && this.getCarDetail();
-    console.log(this.$route.params);
   },
   mounted() {
     this._initPage();
@@ -221,6 +222,9 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper;
     },
+    ...mapGetters([
+      'fromApp',
+    ]),
   },
   methods: {
     getCarId() {
@@ -358,6 +362,10 @@ export default {
     },
     _initPage() {
       // 设置scroll滚动
+      let scrollWrap = document.querySelector('.scroll-wrap');
+      let docHeight = document.documentElement.clientHeight;
+      let scrollWrapHeight = this.fromApp ? docHeight - 64 + 'px' : docHeight - 104 + 'px';
+      scrollWrap.style.height = scrollWrapHeight;
       this.scroll = new BScroll('.scroll-wrap', {
         click: true,
         probeType: 2,
@@ -743,20 +751,22 @@ export default {
     left: 0;
     width: 100%;
     height: 40px;
-    padding: 0 rem(15);
     box-sizing: border-box;
     background: #FFF;
+    &.from-app{
+      top: 0;
+    }
 
     .top-tab_box {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       height: 100%;
       align-items: center;
 
       .top-tab_item {
         flex: 1;
         text-align: center;
-        max-width: 4em;
+        width: 4em;
         height: 100%;
         line-height: 40px;
         font-size: rem(15);

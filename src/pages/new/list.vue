@@ -1,6 +1,6 @@
 <template>
   <div class="container" ref="container">
-    <h-header title="车辆详情" :hasBack="false" ref="header">
+    <h-header title="车辆列表" :hasBack="false" ref="header">
       <van-icon name="chat" slot="right" size="22px" class="header-chat_icon" />
     </h-header>
     <div class="search-box" ref="search">
@@ -72,15 +72,15 @@
     <!-- <transition name="slide">
       <router-view class="router-view_fullpage"></router-view>
     </transition> -->
-    <transition name="topin">
+    <!-- <transition name="topin">
       <div class="city-comp-box" v-show="cityObj.show">
         <h-city-select></h-city-select>
       </div>
-    </transition>
+    </transition> -->
   </div>
 </template>
 <script>
-import hCitySelect from '@/components/hCitySelect';
+// import hCitySelect from '@/components/hCitySelect';
 import hScroll from '@/components/hScroll';
 import {fetchBrands} from '@/api/common/brand';
 import hListView from '@/components/hListView';
@@ -93,9 +93,9 @@ export default {
       carList: [],
       selectList: null,
       currentOpenSelect: -1,
-      cityObj: {
-        show: false,
-      },
+      // cityObj: {
+      //   show: false,
+      // },
       resetTime: null,
       defaultResponseData: {
         lx: 'news',
@@ -218,7 +218,10 @@ export default {
       }
     },
     selectCity() {
-      this.cityObj.show = !this.cityObj.show;
+      this.$router.push({
+        name: 'citySelect',
+      });
+      // this.cityObj.show = !this.cityObj.show;
     },
     onSearch() {
       this.getCarList();
@@ -287,7 +290,7 @@ export default {
     },
   },
   components: {
-    hCitySelect,
+    // hCitySelect,
     hScroll,
     hListView,
   },

@@ -12,6 +12,7 @@ import * as filters from './filters'; // global filters
 import './mock'; // simulation data
 import hHeader from '@/components/hHeader';
 import Icon from 'vue-svg-icon/Icon.vue';
+import './router/permission';
 
 Vue.component('icon', Icon);
 Vue.component('hHeader', hHeader);

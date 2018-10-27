@@ -13,14 +13,14 @@ export default new Router({
       path: '/car',
       name: 'carList',
       component: () => import('@/pages/new/list'),
-      children: [
-
-      ],
     },
     {
       path: '/car-detail',
       name: 'Detail',
       component: () => import('@/pages/new/detail'),
+      meta: {
+        title: '车辆详情',
+      },
     },
     {
       path: '/rent',
@@ -38,6 +38,11 @@ export default new Router({
       path: '/album',
       name: 'Album',
       component: () => import('@/pages/common/album'),
+    },
+    {
+      path: '/city-select',
+      name: 'citySelect',
+      component: () => import('@/pages/common/citySelect'),
     },
   ],
 });

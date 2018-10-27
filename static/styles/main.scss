@@ -57,7 +57,9 @@ $icon_sprite: url('~static/images/css_sprites.png') no-repeat;
   background: #FFF;
 }
 .container.detail {
-  padding-bottom: 60px;
+  // padding-bottom: 60px;
+  box-sizing: border-box;
+  border-bottom: 60px solid #FFF;
 }
 
 .slide-enter-active,

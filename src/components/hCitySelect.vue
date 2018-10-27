@@ -4,7 +4,7 @@
       <li v-for="group in data" :key="group.title" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li @click="selectItem(item)" v-for="item in group.items" :key="item.name" class="list-group-item">
+          <li @click="selectItem(item)" v-for="item in group.items" :key="item.id" class="list-group-item">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -48,6 +48,7 @@ export default {
       diff: -1,
       hasHeight: false,
       data: [],
+      listHeight: [],
     };
   },
   props: {
@@ -79,12 +80,30 @@ export default {
       areaList.forEach(area => {
         let initial = area.initial.toLocaleUpperCase();
         if (!areaListMap[initial]) {
-          areaListMap[initial] = [];
+          areaListMap[initial] = {
+            title: initial,
+            items: [],
+          };
         }
-        areaListMap[initial].push(area);
+        areaListMap[initial].items.push(area);
       });
-      console.log(areaListMap);
-      console.log('areas:', res.data);
+      let ret = [];
+      for (let key in areaListMap) {
+        let val = areaListMap[key];
+        if (val.title.match(/[a-zA-Z]/)) {
+          ret.push(val);
+        } else {
+          console.log('other');
+        }
+      }
+      ret.sort((a, b) => {
+        return a.title.charCodeAt(0) - b.title.charCodeAt(0);
+      });
+      console.log('ret:', ret);
+      this.data = ret;
+      setTimeout(() => {
+        this._calculateHeight();
+      }, 500);
     },
     selectItem(item) {
       this.$emit('select', item);
@@ -135,12 +154,6 @@ export default {
     },
   },
   watch: {
-    len() {
-      if (!this.hasHeight || this.listHeight[this.listHeight.length - 1] === 0) {
-        this._calculateHeight();
-        this.hasHeight = true;
-      }
-    },
     data() {
       setTimeout(() => {
         this._calculateHeight();
