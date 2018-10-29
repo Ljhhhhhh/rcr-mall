@@ -7,6 +7,9 @@ const matutaions = {
   [types.SET_FROMAPP](state, fromApp) {
     state.fromApp = fromApp;
   },
+  [types.SET_AREA](state, area) {
+    state.area = area;
+  },
 };
 
 export default matutaions;

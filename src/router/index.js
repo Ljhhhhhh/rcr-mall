@@ -15,7 +15,7 @@ export default new Router({
       component: () => import('@/pages/new/list'),
     },
     {
-      path: '/car-detail',
+      path: '/car-detail/:id',
       name: 'Detail',
       component: () => import('@/pages/new/detail'),
       meta: {

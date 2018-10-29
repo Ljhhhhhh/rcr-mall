@@ -5,7 +5,7 @@
     </h-header>
     <div class="search-box" ref="search">
       <div class="address-select" @click="selectCity">
-        <span>金华</span>
+        <span>{{area.name || '选择城市'}}</span>
         <i class="triangle-down_icon"></i>
       </div>
       <div class="car-search">
@@ -87,15 +87,14 @@ import hListView from '@/components/hListView';
 import carSelectOptions from './config/carSelectOptions.js';
 import {addClass, removeClass} from '@/utils/dom';
 import {fetchCar} from '@/api/car/carList';
+import {mapGetters} from 'vuex';
+import Storage from 'good-storage';
 export default {
   data() {
     return {
       carList: [],
       selectList: null,
       currentOpenSelect: -1,
-      // cityObj: {
-      //   show: false,
-      // },
       resetTime: null,
       defaultResponseData: {
         lx: 'news',
@@ -107,7 +106,6 @@ export default {
       loadMoreHeight: {
         scrollBoxHeight: null,
         carListBoxHeight: null,
-        // loading: false,
         loading: -1,
         loadComplete: false,
         carTotal: 0,
@@ -118,14 +116,18 @@ export default {
   created () {
     this._initPage();
   },
+  beforeRouteUpdate (to, from, next) {
+  },
+  computed: {
+    ...mapGetters([
+      'area',
+    ]),
+  },
   methods: {
     carDetail(id) {
       console.log(id);
       this.$router.push({
-        name: 'Detail',
-        params: {
-          id,
-        },
+        path: '/car-detail/' + id,
       });
     },
     loadMore(pos) {
@@ -133,14 +135,10 @@ export default {
         this.loadMoreHeight.scrollBoxHeight = document.querySelector('.scroll-box').offsetHeight;
       }
       if (!this.loadMoreHeight.carListBoxHeight) {
-        console.log('...');
         this.loadMoreHeight.carListBoxHeight = document.querySelector('.car-list_box').offsetHeight;
       }
       let scrollBoxHeight = this.loadMoreHeight.scrollBoxHeight;
       let carListBoxHeight = this.loadMoreHeight.carListBoxHeight;
-      // if (pos.y < scrollBoxHeight - carListBoxHeight - 60) {
-      //   this.loadMoreHeight.loading = 1;
-      // }
       if (pos.y < scrollBoxHeight - carListBoxHeight - 60 && this.loadMoreHeight.loading < 0) {
         this.loadMoreHeight.loading = 2;
         if (this.defaultResponseData.size * this.defaultResponseData.page >= this.loadMoreHeight.carTotal) {
@@ -154,7 +152,6 @@ export default {
     },
     scrollToEnd() {
       this.loadMoreHeight.loading = -1;
-      console.log(this.loadMoreHeight.loading);
       this.$refs.scrollCar.refresh();
     },
     resetSelect() {
@@ -221,7 +218,6 @@ export default {
       this.$router.push({
         name: 'citySelect',
       });
-      // this.cityObj.show = !this.cityObj.show;
     },
     onSearch() {
       this.getCarList();
@@ -230,37 +226,37 @@ export default {
       this.selectList = carSelectOptions;
     },
     async getBrandList() {
-      let brandRes = await fetchBrands();
-      console.log(brandRes);
-      brandRes.data.sort((a, b) => {
-        return a.initial.charCodeAt(0) - b.initial.charCodeAt(0);
-      });
-      // this.selectList[1].options = brandRes.data;
-      let brandObj = {};
-      brandRes.data.forEach(brand => {
-        // if (brand.initial)
-        if (!brandObj[brand.initial]) {
-          brandObj[brand.initial] = {
-            title: brand.initial,
-            items: [],
-          };
-        }
-        brandObj[brand.initial].items.push({
-          name: brand.name,
-          id: brand.id,
+      if (!Storage.get('brandList')) {
+        let brandRes = await fetchBrands();
+        brandRes.data.sort((a, b) => {
+          return a.initial.charCodeAt(0) - b.initial.charCodeAt(0);
         });
-      });
+        let brandObj = {};
+        brandRes.data.forEach(brand => {
+          if (!brandObj[brand.initial]) {
+            brandObj[brand.initial] = {
+              title: brand.initial,
+              items: [],
+            };
+          }
+          brandObj[brand.initial].items.push({
+            name: brand.name,
+            id: brand.id,
+          });
+        });
 
-      let ret = [];
-      for (let key in brandObj) {
-        let val = brandObj[key];
-        if (val.title.match(/[a-zA-Z]/)) {
-          ret.push(val);
-        } else {
-          console.log('other');
+        let ret = [];
+        for (let key in brandObj) {
+          let val = brandObj[key];
+          if (val.title.match(/[a-zA-Z]/)) {
+            ret.push(val);
+          } else {
+            console.log('other');
+          }
         }
+        Storage.set('brandList', ret);
       }
-      this.selectList[1].options = ret;
+      this.selectList[1].options = Storage.get('brandList');
       let boxHeight = this.$refs.container.offsetHeight;
       let searchHeight = this.$refs.search.offsetHeight;
       let selectHeight = this.$refs.select[0].offsetHeight;
@@ -279,7 +275,6 @@ export default {
         this.loadMoreHeight.carTotal = carList.data.total;
       } else {
         this.loadMoreHeight.loading = 1;
-        console.log('loadmore carlist');
         this.carList = this.carList.concat(carList.data.rows);
       }
     },
@@ -321,7 +316,7 @@ export default {
 
     .address-select {
       flex: 1;
-      max-width: 6em;
+      min-width: 6em;
       line-height: 45px;
       display: flex;
       text-align: center;

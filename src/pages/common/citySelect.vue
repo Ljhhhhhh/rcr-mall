@@ -1,9 +1,8 @@
 <template>
   <div class="city-select_container">
     <div class="search-box" ref="search">
-      <div class="address-select">
-        <span>金华</span>
-        <i class="triangle-down_icon"></i>
+      <div class="address-select" @click="back">
+        <span>取消</span>
       </div>
       <div class="car-search">
         <van-search v-model="searchText" placeholder="请输入搜索关键词" show-action @on-change="onSearch" @search="onSearch">
@@ -52,6 +51,7 @@ import {
   getData,
 } from '@/utils/dom';
 import Storage from 'good-storage';
+import {mapMutations} from 'vuex';
 
 const ANCHOR_HEIGHT = 18;
 const TITLE_HEIGHT = 40;
@@ -103,6 +103,9 @@ export default {
     },
   },
   methods: {
+    back() {
+      this.$router.back();
+    },
     onSearch() {
       let data = this.originalAreaList.filter(val => {
         return val.name.includes(this.searchText);
@@ -115,8 +118,12 @@ export default {
       document.querySelector('.scroll-wrap').style.height = docHei - searchHei - 15 + 'px';
     },
     async getAreas() {
-      let res = await fetchAreas();
-      this.originalAreaList = res.data.rows;
+      if (!Storage.get('AreaList') || !Storage.get('AreaList').length) {
+        let res = await fetchAreas();
+        Storage.set('AreaList', res.data.rows);
+      }
+      // let res = await fetchAreas();
+      this.originalAreaList = Storage.get('AreaList');
       this.data = this._normalizeList(this.originalAreaList);
     },
     _normalizeList(list) {
@@ -177,11 +184,16 @@ export default {
       if (!Array.isArray(s)) {
         s = [];
       }
-      s.unshift(item);
-      if (s.length > 8) {
-        s.pop();
+      if (JSON.stringify(s).indexOf(JSON.stringify(item)) < 0) {
+        s.unshift(item);
+        if (s.length > 8) {
+          s.pop();
+        }
+        Storage.set('searchCityHistory', s);
       }
-      Storage.set('searchCityHistory', s);
+      Storage.set('Area', item);
+      this.setArea(item);
+      this.$router.back();
     },
     refresh() {
       this.$refs.listview.refresh();
@@ -227,6 +239,9 @@ export default {
         this.listHeight.push(height);
       }
     },
+    ...mapMutations({
+      setArea: 'SET_AREA',
+    }),
   },
   watch: {
     searchText(val) {
@@ -238,7 +253,7 @@ export default {
     data() {
       setTimeout(() => {
         this._calculateHeight();
-      }, 200);
+      }, 400);
     },
     scrollY(newY) {
       const listHeight = this.listHeight;

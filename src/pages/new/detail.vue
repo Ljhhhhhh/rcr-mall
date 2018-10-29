@@ -119,7 +119,7 @@
       <h-consult @changeFollow="changeFollow" :following="carInfo.follow"></h-consult>
     </keep-alive>
     <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
-    <div class="fix-top_tab van-hairline--bottom" :class="{'from-app': !uaInfo}" v-show="topTabActive.state">
+    <div class="fix-top_tab van-hairline--bottom" :class="{'from-app': fromApp}" v-show="topTabActive.state">
       <div class="top-tab_box">
         <span class="top-tab_item" :class="{active:i===topTabActive.index}" v-for="(tab, i) in topTabElemMap" :key="i"
           @click="scrollToElement(i)">
@@ -209,13 +209,16 @@ export default {
   },
   mounted() {
     this._initPage();
-    console.log('mounted:', window.carId);
   },
   watch: {
     $route: function (to, from) {
       if (from.name === 'storeSelect') {
         this.show = true;
       }
+      this.getCarId() && this.getCarDetail();
+      this.topTabActive.state = false;
+      this.scroll.scrollTo(0, 0);
+      // this._initPage();
     },
   },
   computed: {
@@ -226,9 +229,13 @@ export default {
       'fromApp',
     ]),
   },
+  // beforeRouteUpdate (to, from, next) {
+  //   next();
+  //   // react to route changes...
+  //   // don't forget to call next()
+  // },
   methods: {
     getCarId() {
-      console.log('getCarId:', window.carId);
       this.carId = this.$route.params.id || window.carId;
       if (!this.carId) {
         this.$router.push({
@@ -239,14 +246,22 @@ export default {
       return true;
     },
     recommendCar(id) {
-      this.carId = id;
-      this.getCarDetail();
-      this.scroll.scrollTo(0, 0, 300);
+      // this.carId = id;
+      this.$router.push({
+        path: '/car-detail/' + id,
+      });
+      // this.$router.push({
+      //   name: 'Detail',
+      //   params: {
+      //     id,
+      //   },
+      // });
+      // this.getCarDetail();
+      // this.scroll.scrollTo(0, 0, 300);
     },
     async getCarDetail() {
       let res = await carDetail(this.carId); // 12是车的ID
       // 整理banner列表，使其按照type归类
-      console.log('res:', res.data);
       let data = res.data;
       let mode = data.modes[0];
       this.bannerList = clearupList(res.data.imgs);
@@ -359,6 +374,11 @@ export default {
         }
       });
       this.topTabActive.index = activeIndex;
+      if (this.topTabActive.index < 0) {
+        this.topTabActive.state = false;
+      } else {
+        this.topTabActive.state = true;
+      }
     },
     _initPage() {
       // 设置scroll滚动
@@ -368,17 +388,17 @@ export default {
       scrollWrap.style.height = scrollWrapHeight;
       this.scroll = new BScroll('.scroll-wrap', {
         click: true,
-        probeType: 2,
+        probeType: 3,
       });
       this.scroll.on('scroll', (pos) => {
         this._scroll(pos);
       });
       this.scroll.on('scrollEnd', (pos) => {
-        this._scroll(pos);
-        if (this.topTabActive.index < 0) {
-          this.topTabActive.state = false;
-        } else {
+        let stateFlag = this.topTabElemMap[0].offsetTop;
+        if (-pos.y > stateFlag) {
           this.topTabActive.state = true;
+        } else {
+          this.topTabActive.state = false;
         }
       });
     },
