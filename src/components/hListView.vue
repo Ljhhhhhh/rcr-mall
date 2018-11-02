@@ -108,6 +108,9 @@ export default {
     _calculateHeight() {
       this.listHeight = [];
       const list = this.$refs.listGroup;
+      if (!list) {
+        return;
+      }
       let height = 0;
       this.listHeight.push(height);
       for (let i = 0; i < list.length; i++) {
@@ -118,16 +121,19 @@ export default {
     },
   },
   watch: {
-    len() {
+    len(val) {
       if (!this.hasHeight || this.listHeight[this.listHeight.length - 1] === 0) {
         this._calculateHeight();
         this.hasHeight = true;
       }
     },
-    data() {
-      setTimeout(() => {
+    data(val) {
+      this.$nextTick(() => {
         this._calculateHeight();
-      }, 200);
+      });
+      // setTimeout(() => {
+      //   this._calculateHeight();
+      // }, 200);
     },
     scrollY(newY) {
       const listHeight = this.listHeight;

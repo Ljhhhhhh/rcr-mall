@@ -13,7 +13,16 @@ import './mock'; // simulation data
 import hHeader from '@/components/hHeader';
 import Icon from 'vue-svg-icon/Icon.vue';
 import './router/permission';
-
+import AMap from 'vue-amap';
+Vue.use(AMap);
+AMap.initAMapApiLoader({
+  // 高德的key
+  key: '931d081122d6c5ff0b32ed70b413d412',
+  // 插件集合
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  // 高德 sdk 版本，默认为 1.4.4
+  v: '1.4.4',
+});
 Vue.component('icon', Icon);
 Vue.component('hHeader', hHeader);
 // options 为可选参数，无则不传

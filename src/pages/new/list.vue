@@ -17,7 +17,7 @@
     <div class="orderby-select_box van-hairline--bottom">
       <span ref="select" v-for="(select, index) in selectList" :key="index" :class="{'selected': index===currentOpenSelect}" @click="changeSelect(index)">
         <em>{{select.currentName || select.name}}</em>
-        <i class="triangle-down_icon"  :class="{'turn-up': index===currentOpenSelect}"></i>
+        <i class="triangle-down_icon" :class="{'turn-up': index===currentOpenSelect}"></i>
       </span>
       <span class="orderby-select_reset" @click="resetSelect" ref="reset"><img src="static/images/reset.png"></span>
       <transition name="topin" v-show="currentOpenSelect>-1">
@@ -116,7 +116,11 @@ export default {
   created () {
     this._initPage();
   },
+  mounted() {
+    this.getBrandList();
+  },
   beforeRouteUpdate (to, from, next) {
+    next();
   },
   computed: {
     ...mapGetters([
@@ -281,7 +285,6 @@ export default {
     _initPage() {
       this.getCarList();
       this.getCarSelectOptions();
-      this.getBrandList();
     },
   },
   components: {

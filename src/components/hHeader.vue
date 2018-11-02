@@ -61,6 +61,7 @@ export default {
         flex: 3;
         color: #333;
         font-family: $font_bold;
+        font-weight: bold;
         font-size: rem(17);
         text-align: center;
         overflow: hidden;

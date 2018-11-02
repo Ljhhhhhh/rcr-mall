@@ -321,11 +321,12 @@ export default {
     }
   }
     .scroll-wrap{
-      margin-top: 15px;
+      border-top: 15px solid #FFF;
       height: auto;
       width: auto;
       padding: 0 rem(15);
       overflow: hidden;
+      background: #FFF;
     }
   }
   .listview {

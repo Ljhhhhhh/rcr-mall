@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -24,15 +25,21 @@ export default new Router({
     },
     {
       path: '/rent',
+      name: 'rent',
+      component: () => import('@/pages/rent/rent'),
+    },
+    {
+      path: '/rentlist',
       name: 'rentList',
       component: () => import('@/pages/rent/list'),
-      children: [
-        {
-          path: 'detail',
-          name: 'RentDetail',
-          component: () => import('@/pages/rent/detail'),
-        },
-      ],
+      meta: {
+        title: '租车列表',
+      },
+    },
+    {
+      path: '/rent/detail',
+      name: 'RentDetail',
+      component: () => import('@/pages/rent/detail'),
     },
     {
       path: '/album',

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function padStartIndex(index, list) {
   let pad = (list.length + '').split('').length;
   return (index + '').padStart(pad, 0);
@@ -8,3 +10,7 @@ export function formatPrice(price) {
   }
   return price;
 };
+
+export function formatTime(time) {
+  return dayjs(time).format('YYYY/MM/DD');
+}

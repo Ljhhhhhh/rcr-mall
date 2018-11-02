@@ -141,6 +141,17 @@ p {
   }
 }
 
+.select-map_icon{
+  display: inline-block;
+  width: 10px;
+  height: 13px;
+  background: red;
+  background: url('~/static/images/rent-css_sprites.png') no-repeat;
+  background-size: 183px 34px;
+  background-position: -2px -2px;
+  vertical-align: middle;
+}
+
 @keyframes rotate
 {
 from {
