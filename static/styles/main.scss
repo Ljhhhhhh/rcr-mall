@@ -48,7 +48,8 @@ $icon_sprite: url('~static/images/css_sprites.png') no-repeat;
   position: relative;
   top: 0;
 }
-.router-view_fullpage{
+
+.router-view_fullpage {
   position: absolute;
   top: 44px;
   bottom: 0;
@@ -56,6 +57,7 @@ $icon_sprite: url('~static/images/css_sprites.png') no-repeat;
   right: 0;
   background: #FFF;
 }
+
 .container.detail {
   // padding-bottom: 60px;
   box-sizing: border-box;
@@ -124,7 +126,7 @@ p {
   transform: translateY(-50%);
 }
 
-.triangle-down_icon{
+.triangle-down_icon {
   display: inline-block;
   width: 0;
   height: 0;
@@ -135,13 +137,14 @@ p {
   border-bottom: none;
   font-size: 0;
   transition: all .3s;
-  &.turn-up{
+
+  &.turn-up {
     transform: rotate(180deg);
     color: $color_theme;
   }
 }
 
-.select-map_icon{
+.select-map_icon {
   display: inline-block;
   width: 10px;
   height: 13px;
@@ -152,12 +155,12 @@ p {
   vertical-align: middle;
 }
 
-@keyframes rotate
-{
-from {
-  transform: rotate(0deg);
-}
-to {
-  transform: rotate(360deg);
-}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }

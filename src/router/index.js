@@ -5,51 +5,62 @@ Vue.use(Router);
 
 export default new Router({
   // mode: 'history',
-  routes: [
-    {
-      path: '/',
-      redirect: '/car',
+  routes: [{
+    path: '/',
+    redirect: '/car',
+  },
+  {
+    path: '/car',
+    name: 'carList',
+    component: () => import('@/pages/new/list'),
+  },
+  {
+    path: '/car-detail/:id',
+    name: 'Detail',
+    component: () => import('@/pages/new/detail'),
+    meta: {
+      title: '车辆详情',
     },
-    {
-      path: '/car',
-      name: 'carList',
-      component: () => import('@/pages/new/list'),
+  },
+  {
+    path: '/rent',
+    name: 'rent',
+    component: () => import('@/pages/rent/rent'),
+  },
+  {
+    path: '/rentlist',
+    name: 'rentList',
+    component: () => import('@/pages/rent/list'),
+    meta: {
+      title: '租车列表',
     },
-    {
-      path: '/car-detail/:id',
-      name: 'Detail',
-      component: () => import('@/pages/new/detail'),
-      meta: {
-        title: '车辆详情',
-      },
+  },
+  {
+    path: '/rent/detail',
+    name: 'RentDetail',
+    component: () => import('@/pages/rent/detail'),
+  },
+  {
+    path: '/second',
+    name: 'secondList',
+    component: () => import('@/pages/second/list'),
+  }, {
+    path: '/second-detail/:id',
+    name: 'secondDetail',
+    component: () => import('@/pages/second/detail'),
+    meta: {
+      title: '车辆详情',
     },
-    {
-      path: '/rent',
-      name: 'rent',
-      component: () => import('@/pages/rent/rent'),
-    },
-    {
-      path: '/rentlist',
-      name: 'rentList',
-      component: () => import('@/pages/rent/list'),
-      meta: {
-        title: '租车列表',
-      },
-    },
-    {
-      path: '/rent/detail',
-      name: 'RentDetail',
-      component: () => import('@/pages/rent/detail'),
-    },
-    {
-      path: '/album',
-      name: 'Album',
-      component: () => import('@/pages/common/album'),
-    },
-    {
-      path: '/city-select',
-      name: 'citySelect',
-      component: () => import('@/pages/common/citySelect'),
-    },
+  },
+  {
+    path: '/album',
+    name: 'Album',
+    component: () => import('@/pages/common/album'),
+  },
+  {
+    path: '/city-select',
+    name: 'citySelect',
+    component: () => import('@/pages/common/citySelect'),
+  },
   ],
 });

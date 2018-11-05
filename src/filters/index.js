@@ -14,3 +14,17 @@ export function formatPrice(price) {
 export function formatTime(time) {
   return dayjs(time).format('YYYY/MM/DD');
 }
+
+export function formatMile(mile) {
+  console.log(mile);
+  if (!mile) {
+    return '未知';
+  }
+  let m = '';
+  if (Number(mile) > 1000) {
+    m = (mile / 1000).toFixed(2) + 'K';
+  }
+  console.log(m);
+  m += 'm';
+  return m;
+}
