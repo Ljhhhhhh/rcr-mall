@@ -18,7 +18,9 @@
     "dayjs": "^1.7.7",
     "fastclick": "^1.0.6",
     "good-storage": "^1.0.1",
+    "js-cookie": "^2.2.0",
     "mathjs": "^5.2.0",
+    "mint-ui": "^2.2.13",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.22.2",
     "node-sass": "^4.9.3",
@@ -31,6 +33,7 @@
     "vue-lazyload": "^1.2.6",
     "vue-meta": "^1.5.5",
     "vue-router": "^3.0.1",
+    "vue-select": "^2.5.1",
     "vue-svg-icon": "^1.2.9",
     "vuex": "^3.0.1",
     "weixin-js-sdk": "^1.4.0-test"

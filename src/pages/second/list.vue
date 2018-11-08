@@ -1,7 +1,7 @@
 <template>
   <div class="container" ref="container">
-    <h-header title="二手车" :hasBack="false" ref="header">
-      <van-icon name="chat" slot="right" size="22px" class="header-chat_icon" />
+    <h-header title="二手车" ref="header">
+      <span slot="right" class="sale_btn" @click="goSale">卖车</span>
     </h-header>
     <div class="search-box" ref="search">
       <div class="address-select" @click="selectCity">
@@ -68,9 +68,6 @@
     <transition name="van-fade">
       <div class="modal" @click="currentOpenSelect = -1" v-show="currentOpenSelect>-1">Fade</div>
     </transition>
-    <!-- <transition name="slide">
-      <router-view class="router-view_fullpage"></router-view>
-    </transition> -->
     <!-- <transition name="topin">
       <div class="city-comp-box" v-show="cityObj.show">
         <h-city-select></h-city-select>
@@ -106,7 +103,7 @@ export default {
       currentOpenSelect: -1,
       resetTime: null,
       defaultResponseData: {
-        lx: 'news',
+        lx: 'olds',
         size: 5,
         page: 1,
       },
@@ -132,11 +129,14 @@ export default {
     next();
   },
   computed: {
-    ...mapGetters([
-      'area',
-    ]),
+    ...mapGetters(['area']),
   },
   methods: {
+    goSale() {
+      this.$router.push({
+        name: 'secondSale',
+      });
+    },
     carDetail(id) {
       console.log(id);
       this.$router.push({
@@ -145,16 +145,26 @@ export default {
     },
     loadMore(pos) {
       if (!this.loadMoreHeight.scrollBoxHeight) {
-        this.loadMoreHeight.scrollBoxHeight = document.querySelector('.scroll-box').offsetHeight;
+        this.loadMoreHeight.scrollBoxHeight = document.querySelector(
+          '.scroll-box'
+        ).offsetHeight;
       }
       if (!this.loadMoreHeight.carListBoxHeight) {
-        this.loadMoreHeight.carListBoxHeight = document.querySelector('.car-list_box').offsetHeight;
+        this.loadMoreHeight.carListBoxHeight = document.querySelector(
+          '.car-list_box'
+        ).offsetHeight;
       }
       let scrollBoxHeight = this.loadMoreHeight.scrollBoxHeight;
       let carListBoxHeight = this.loadMoreHeight.carListBoxHeight;
-      if (pos.y < scrollBoxHeight - carListBoxHeight - 60 && this.loadMoreHeight.loading < 0) {
+      if (
+        pos.y < scrollBoxHeight - carListBoxHeight - 60 &&
+          this.loadMoreHeight.loading < 0
+      ) {
         this.loadMoreHeight.loading = 2;
-        if (this.defaultResponseData.size * this.defaultResponseData.page >= this.loadMoreHeight.carTotal) {
+        if (
+          this.defaultResponseData.size * this.defaultResponseData.page >=
+            this.loadMoreHeight.carTotal
+        ) {
           this.loadMoreHeight.loadComplete = true;
           this.loadMoreHeight.msg = '已加载全部';
           return false;
@@ -210,10 +220,13 @@ export default {
         currentSelect.active = optionIndex;
         currentSelect.currentName = currentSelect.options[optionIndex].tag;
         if (selectIndex === 0) {
-          this.selectResponseData.stored = currentSelect.options[optionIndex].filed;
-          this.selectResponseData.order = currentSelect.options[optionIndex].order;
+          this.selectResponseData.stored =
+              currentSelect.options[optionIndex].filed;
+          this.selectResponseData.order =
+              currentSelect.options[optionIndex].order;
         } else {
-          this.selectResponseData[currentSelect.search] = currentSelect.options[optionIndex].tag;
+          this.selectResponseData[currentSelect.search] =
+              currentSelect.options[optionIndex].tag;
         }
       }
       this.defaultResponseData.page = 1;
@@ -280,9 +293,12 @@ export default {
     },
     async getCarList(loadMore = false) {
       // let defaultResponse = this.defaultResponseData;
-      let response = Object.assign({}, this.defaultResponseData, this.selectResponseData, {
-        searchText: this.searchText,
-      });
+      let response = Object.assign({},
+        this.defaultResponseData,
+        this.selectResponseData, {
+          searchText: this.searchText,
+        }
+      );
       let carList = await fetchCar(response);
       // this.loadMoreHeight.loading = false;
       if (!loadMore) {
@@ -322,9 +338,14 @@ export default {
     vertical-align: middle;
   }
 
+  .sale_btn {
+    color: $color_theme;
+    font-size: rem(15);
+  }
+
   .search-box {
     display: flex;
-    background: #F2F2F2;
+    background: #f2f2f2;
 
     .van-search .van-cell {
       border-radius: 3px;
@@ -376,7 +397,7 @@ export default {
 
       &.selected {
         em {
-          color: #0198E7;
+          color: #0198e7;
         }
       }
 
@@ -416,8 +437,8 @@ export default {
       top: 40px;
       left: 0;
       right: 0;
-      border-right: rem(0.1) solid #FFF;
-      border-left: rem(0.1) solid #FFF;
+      border-right: rem(0.1) solid #fff;
+      border-left: rem(0.1) solid #fff;
       width: auto;
       height: auto;
       z-index: 3;
@@ -425,9 +446,9 @@ export default {
       ul {
         width: 100%;
         height: auto;
-        background: #FFF;
-        border-right: rem(14) solid #FFF;
-        border-left: rem(14) solid #FFF;
+        background: #fff;
+        border-right: rem(14) solid #fff;
+        border-left: rem(14) solid #fff;
         box-sizing: border-box;
 
         &.orderby-select_default {
@@ -441,7 +462,7 @@ export default {
             }
 
             &.selected {
-              color: #0198E7;
+              color: #0198e7;
             }
           }
         }
@@ -463,7 +484,7 @@ export default {
             margin-right: rem(30);
             border-radius: rem(3);
             text-align: center;
-            background: #F2F2F2;
+            background: #f2f2f2;
             box-sizing: border-box;
 
             &:nth-child(3n) {
@@ -472,8 +493,8 @@ export default {
 
             &.selected {
               color: $font_theme;
-              box-shadow: 0 0 0 1px #0198E7;
-              background: #E3F5FF;
+              box-shadow: 0 0 0 1px #0198e7;
+              background: #e3f5ff;
             }
           }
         }
@@ -493,7 +514,7 @@ export default {
           line-height: 30px;
           padding: 0 rem(10);
           background: $color_theme;
-          color: #FFF;
+          color: #fff;
           border-radius: rem(3);
         }
       }
@@ -538,7 +559,7 @@ export default {
     width: 100%;
     height: auto;
     z-index: 2;
-    background: #FFF;
+    background: #fff;
 
     .car-list_item {
       width: auto;
@@ -549,7 +570,7 @@ export default {
       margin: 0 rem(15);
       padding: 20px 0;
       z-index: 3;
-      background: #FFF;
+      background: #fff;
 
       .car-thumb {
         width: rem(135);
@@ -568,7 +589,7 @@ export default {
           right: 0;
           text-align: center;
           background: $color_vice;
-          color: #FFF;
+          color: #fff;
           font-size: rem(12);
           line-height: rem(20);
         }
@@ -584,7 +605,7 @@ export default {
         align-items: flex-start;
 
         p.title {
-          color: #2E2E2E;
+          color: #2e2e2e;
           font-family: $font_bold;
           font-size: rem(15);
         }

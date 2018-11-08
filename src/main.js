@@ -5,7 +5,10 @@ import App from './App';
 import router from './router';
 import store from './store';
 import FastClick from 'fastclick';
-import Vant, {Lazyload} from 'vant';
+import Vant, {
+  Lazyload,
+} from 'vant';
+import vSelect from 'vue-select';
 import 'vant/lib/vant-css/index.css';
 import 'static/styles/main.scss';
 import * as filters from './filters'; // global filters
@@ -13,6 +16,9 @@ import './mock'; // simulation data
 import hHeader from '@/components/hHeader';
 import Icon from 'vue-svg-icon/Icon.vue';
 import './router/permission';
+import {
+  OsAction,
+} from '@/utils/contactOs';
 import AMap from 'vue-amap';
 Vue.use(AMap);
 AMap.initAMapApiLoader({
@@ -23,6 +29,8 @@ AMap.initAMapApiLoader({
   // 高德 sdk 版本，默认为 1.4.4
   v: '1.4.4',
 });
+window.OsAction = OsAction;
+Vue.component('v-select', vSelect);
 Vue.component('icon', Icon);
 Vue.component('hHeader', hHeader);
 // options 为可选参数，无则不传
@@ -41,6 +49,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {
+    App,
+  },
   template: '<App/>',
 });

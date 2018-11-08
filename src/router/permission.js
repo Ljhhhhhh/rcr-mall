@@ -1,6 +1,7 @@
 import router from './index';
 
 router.beforeEach((to, from, next) => {
+  console.log(router);
   if (to.meta && to.meta.title) {
     document.title = to.meta.title;
   } else {

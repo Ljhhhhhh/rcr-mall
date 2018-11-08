@@ -1,6 +1,6 @@
 <template>
   <div class="container" ref="container">
-    <h-header title="车辆列表" :hasBack="false" ref="header">
+    <h-header title="车辆列表" ref="header">
       <van-icon name="chat" slot="right" size="22px" class="header-chat_icon" />
     </h-header>
     <div class="search-box" ref="search">
@@ -15,34 +15,33 @@
       </div>
     </div>
     <div class="orderby-select_box van-hairline--bottom">
-      <span ref="select" v-for="(select, index) in selectList" :key="index" :class="{'selected': index===currentOpenSelect}" @click="changeSelect(index)">
+      <span ref="select" v-for="(select, index) in selectList" :key="index" :class="{'selected': index===currentOpenSelect}"
+        @click="changeSelect(index)">
         <em>{{select.currentName || select.name}}</em>
         <i class="triangle-down_icon" :class="{'turn-up': index===currentOpenSelect}"></i>
       </span>
       <span class="orderby-select_reset" @click="resetSelect" ref="reset"><img src="static/images/reset.png"></span>
       <transition name="topin" v-show="currentOpenSelect>-1">
         <div class="orderby-select_option" ref="options">
-            <ul class="orderby-select_default" v-show="currentOpenSelect === 0">
-              <li
-               v-for="(option, i) in selectList[0].options"
-               :key="i"
-               :class="{selected:i===option.active}"
-               @click="optionChange(0, i)"
-               class="van-hairline--bottom">
-                <span>{{option.tag}}</span>
-                <van-icon color="#0198E7" name="success" v-show="i===selectList[0].active" />
-              </li>
-            </ul>
-            <div class="brandScrollWrap" v-show="currentOpenSelect === 1">
-              <h-list-view :len="currentOpenSelect" :data="selectList[1].options" @select="brandSelected"></h-list-view>
-              <div class="reset-brand_btn" @click="brandSelected({name: null, id: null})">重置</div>
-            </div>
-            <ul class="orderby-select_first" v-show="currentOpenSelect === 2">
-              <li v-for="(option, i) in selectList[2].options" :key="i" :class="{selected:i===selectList[2].active}" @click="optionChange(2, i)">{{option.tag}}</li>
-            </ul>
-            <ul class="orderby-select_price" v-show="currentOpenSelect === 3">
-              <li v-for="(option, i) in selectList[3].options" :key="i" :class="{selected:i===selectList[3].active}" @click="optionChange(3, i)">{{option.tag}}</li>
-            </ul>
+          <ul class="orderby-select_default" v-show="currentOpenSelect === 0">
+            <li v-for="(option, i) in selectList[0].options" :key="i" :class="{selected:i===option.active}" @click="optionChange(0, i)"
+              class="van-hairline--bottom">
+              <span>{{option.tag}}</span>
+              <van-icon color="#0198E7" name="success" v-show="i===selectList[0].active" />
+            </li>
+          </ul>
+          <div class="brandScrollWrap" v-show="currentOpenSelect === 1">
+            <h-list-view :len="currentOpenSelect" :data="selectList[1].options" @select="brandSelected"></h-list-view>
+            <div class="reset-brand_btn" @click="brandSelected({name: null, id: null})">重置</div>
+          </div>
+          <ul class="orderby-select_first" v-show="currentOpenSelect === 2">
+            <li v-for="(option, i) in selectList[2].options" :key="i" :class="{selected:i===selectList[2].active}"
+              @click="optionChange(2, i)">{{option.tag}}</li>
+          </ul>
+          <ul class="orderby-select_price" v-show="currentOpenSelect === 3">
+            <li v-for="(option, i) in selectList[3].options" :key="i" :class="{selected:i===selectList[3].active}"
+              @click="optionChange(3, i)">{{option.tag}}</li>
+          </ul>
         </div>
       </transition>
     </div>
@@ -82,13 +81,24 @@
 <script>
 // import hCitySelect from '@/components/hCitySelect';
 import hScroll from '@/components/hScroll';
-import {fetchBrands} from '@/api/common/brand';
+import {
+  fetchBrands,
+} from '@/api/common/brand';
 import hListView from '@/components/hListView';
 import carSelectOptions from './config/carSelectOptions.js';
-import {addClass, removeClass} from '@/utils/dom';
-import {fetchCar} from '@/api/car/carList';
-import {mapGetters} from 'vuex';
+import {
+  addClass,
+  removeClass,
+} from '@/utils/dom';
+import {
+  fetchCar,
+} from '@/api/car/carList';
+import {
+  mapGetters,
+} from 'vuex';
 import Storage from 'good-storage';
+import loginByWechat from '@/utils/wx';
+
 export default {
   data() {
     return {
@@ -113,18 +123,22 @@ export default {
       },
     };
   },
-  created () {
+  created() {
     this._initPage();
   },
   mounted() {
     this.getBrandList();
+    if (!this.userinfo) {
+      loginByWechat(this.$route.query);
+    }
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     next();
   },
   computed: {
     ...mapGetters([
       'area',
+      'userinfo',
     ]),
   },
   methods: {
@@ -271,7 +285,9 @@ export default {
     },
     async getCarList(loadMore = false) {
       // let defaultResponse = this.defaultResponseData;
-      let response = Object.assign({}, this.defaultResponseData, this.selectResponseData, {searchText: this.searchText});
+      let response = Object.assign({}, this.defaultResponseData, this.selectResponseData, {
+        searchText: this.searchText,
+      });
       let carList = await fetchCar(response);
       // this.loadMoreHeight.loading = false;
       if (!loadMore) {
@@ -296,15 +312,17 @@ export default {
     this.resetTime = null;
   },
 };
+
 </script>
 <style lang="scss" scoped>
-  .modal{
+  .modal {
     width: 100%;
     height: calc(100vh - 130px);
     z-index: 2;
     opacity: 0.7;
     background: #000;
   }
+
   .header-chat_icon {
     vertical-align: middle;
   }
@@ -360,8 +378,9 @@ export default {
       text-align: center;
       height: 100%;
       line-height: 40px;
-      &.selected{
-        em{
+
+      &.selected {
+        em {
           color: #0198E7;
         }
       }
@@ -376,16 +395,20 @@ export default {
         white-space: nowrap;
         vertical-align: middle;
       }
-      i{
+
+      i {
         vertical-align: middle;
       }
-      &.orderby-select_reset{
+
+      &.orderby-select_reset {
         max-width: rem(30);
         text-align: center;
-        &.circle{
+
+        &.circle {
           transform: rotate(720deg);
         }
-        img{
+
+        img {
           vertical-align: middle;
           width: rem(20);
           height: auto;
@@ -403,6 +426,7 @@ export default {
       width: auto;
       height: auto;
       z-index: 3;
+
       ul {
         width: 100%;
         height: auto;
@@ -410,6 +434,7 @@ export default {
         border-right: rem(14) solid #FFF;
         border-left: rem(14) solid #FFF;
         box-sizing: border-box;
+
         &.orderby-select_default {
           li {
             display: flex;
@@ -425,13 +450,16 @@ export default {
             }
           }
         }
-        &.orderby-select_first, &.orderby-select_price{
+
+        &.orderby-select_first,
+        &.orderby-select_price {
           display: flex;
-          justify-content:space-between;
+          justify-content: space-between;
           align-items: center;
           flex-wrap: wrap;
           padding-top: rem(25);
-          li{
+
+          li {
             flex: 1;
             min-width: rem(90);
             max-width: rem(90);
@@ -442,10 +470,12 @@ export default {
             text-align: center;
             background: #F2F2F2;
             box-sizing: border-box;
-            &:nth-child(3n){
+
+            &:nth-child(3n) {
               margin-right: 0;
             }
-            &.selected{
+
+            &.selected {
               color: $font_theme;
               box-shadow: 0 0 0 1px #0198E7;
               background: #E3F5FF;
@@ -453,13 +483,15 @@ export default {
           }
         }
       }
-      .brandScrollWrap{
+
+      .brandScrollWrap {
         height: 100%;
         width: 100%;
         overflow: hidden;
         background: red;
         position: relative;
-        .reset-brand_btn{
+
+        .reset-brand_btn {
           position: absolute;
           right: rem(15);
           top: 0;
@@ -480,7 +512,8 @@ export default {
     position: absolute;
     top: 85px;
     bottom: 0;
-    .load-state_msg{
+
+    .load-state_msg {
       position: absolute;
       left: 0;
       right: 0;
@@ -488,14 +521,18 @@ export default {
       text-align: center;
       line-height: 30px;
       z-index: 1;
-      span{
+
+      span {
         line-height: 30px;
         vertical-align: middle;
       }
-      .load-state_icon{
+
+      .load-state_icon {
         animation: rotate 1s linear infinite;
       }
-      .load-complete_icon, .load-state_icon{
+
+      .load-complete_icon,
+      .load-state_icon {
         line-height: 30px;
         vertical-align: middle;
       }

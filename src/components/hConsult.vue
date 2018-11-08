@@ -1,7 +1,7 @@
 <template>
   <div class="consult van-hairline--top">
     <div class="content">
-      <div class="heart" @click="setHeart" :class="{'yes': following}">
+      <div class="heart" @click="setHeart" :class="{'yes': !following}">
         <i></i>
         <p>{{followState}}</p>
       </div>
@@ -37,7 +37,9 @@
 </template>
 <script>
 import hStoreSelect from '@/components/hStoreSelect';
-import {OsAction} from '@/utils/contactOs';
+import {
+  OsAction,
+} from '@/utils/contactOs';
 export default {
   name: 'hConsult',
   props: {
@@ -48,7 +50,7 @@ export default {
   },
   computed: {
     followState() {
-      return this.following ? '已关注' : '关注';
+      return this.following ? '关注' : '已关注';
     },
   },
   data() {
@@ -85,7 +87,8 @@ export default {
       // alert('选择门店');
     },
     consultNow() {
-      alert('咨询！');
+      // alert('咨询！');
+      this.$emit('addOrder');
     },
     toggleShow() {
       this.show = !this.show;
@@ -95,6 +98,7 @@ export default {
     hStoreSelect,
   },
 };
+
 </script>
 <style lang="scss" scoped>
   .consult {
@@ -257,4 +261,5 @@ export default {
       }
     }
   }
+
 </style>

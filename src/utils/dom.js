@@ -68,3 +68,27 @@ export function prefixStyle(style) {
   }
   return vendor + style.charAt(0).toUpperCase() + style.substr(1);
 }
+
+function getStyle(obj, attr) {
+  let val;
+  if (obj.currentStyle) {
+    val = obj.currentStyle[attr];
+  } else {
+    val = document.defaultView.getComputedStyle(obj, null)[attr];
+  }
+  return parseInt(val);
+}
+
+export function calHei(parent, child, ...args) {
+  let pH = parent.offsetHeight || parent.$el.offsetHeight;
+  let moveH = 0;
+  for (let arg of args) {
+    let el = arg.$el || arg;
+    let thisH = el.offsetHeight + getStyle(el, 'marginTop') + getStyle(el, 'marginBottom');
+    moveH += thisH;
+  };
+  let c = child.$el || child;
+  let childM = getStyle(c, 'marginTop') + getStyle(c, 'marginBottom');
+  let childH = pH - childM - moveH;
+  c.style.height = childH + 'px';
+}

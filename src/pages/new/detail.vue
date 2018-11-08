@@ -1,5 +1,5 @@
 <template>
-<!-- <transition name="slide"> -->
+  <!-- <transition name="slide"> -->
   <div class="container detail">
     <!-- {{uaInfo}} -->
     <h-header title="车辆详情" v-if="!fromApp">
@@ -43,7 +43,8 @@
         </div>
         <div class="car-info_program van-hairline--bottom" ref="program">
           <ul class="tab_item">
-            <li v-for="(item, index) in Object.keys(programList)" :key="index" :class="{active:index===programActive}" @click="setProgram(index)">{{item}}</li>
+            <li v-for="(item, index) in Object.keys(programList)" :key="index" :class="{active:index===programActive}"
+              @click="setProgram(index)">{{item}}</li>
           </ul>
           <div class="tab-content">
             <div class="wrap">
@@ -103,7 +104,8 @@
         <div class="car-recommend">
           <h-content-title title="为你推荐"></h-content-title>
           <div class="recommend-list_box">
-            <div class="recommend-list van-hairline--surround"  v-for="(recommend, index) in recommendList" :key="index" @click="recommendCar(recommend.id)">
+            <div class="recommend-list van-hairline--surround" v-for="(recommend, index) in recommendList" :key="index"
+              @click="recommendCar(recommend.id)">
               <p>{{recommend.tags}}</p>
               <img :src="recommend.thumb">
               <div>
@@ -115,10 +117,10 @@
         </div>
       </div>
     </div>
-    <keep-alive>
-      <h-consult @changeFollow="changeFollow" :following="carInfo.follow"></h-consult>
-    </keep-alive>
     <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
+    <keep-alive>
+      <h-consult @changeFollow="changeFollow" :following="carInfo.follow" @addOrder="addOrder"></h-consult>
+    </keep-alive>
     <div class="fix-top_tab van-hairline--bottom" :class="{'from-app': fromApp}" v-show="topTabActive.state">
       <div class="top-tab_box">
         <span class="top-tab_item" :class="{active:i===topTabActive.index}" v-for="(tab, i) in topTabElemMap" :key="i"
@@ -128,7 +130,7 @@
       </div>
     </div>
   </div>
-<!-- </transition> -->
+  <!-- </transition> -->
 </template>
 <script>
 import hTag from '@/components/hTag';
@@ -140,14 +142,31 @@ import {
   swiperSlide,
 } from 'vue-awesome-swiper';
 import {
-  mapMutations, mapGetters,
+  mapMutations,
+  mapGetters,
 } from 'vuex';
 import clearupList from '@/utils/clearupAlbumlist';
 import BScroll from 'better-scroll';
 import hToTop from '@/components/hToTop';
-import {carDetail} from '@/api/car/carDetail';
-import {changeFollow} from '@/api/car/carFollow';
-// import {OsAction} from '@/utils/contactOs';
+import {
+  carDetail,
+} from '@/api/car/carDetail';
+import {
+  changeFollow,
+} from '@/api/car/carFollow';
+import {
+  addOrder,
+} from '@/api/order/order';
+import {
+  webAction,
+} from '@/utils/contactOs';
+  // window.userinfo = {
+  //   userToken: 'qm30apwcqvmzks5t9icxp9gagnq2kv2e',
+  //   isLogin: true,
+  //   userId: 10,
+  //   fromApp: 1,
+  //   cardId: 12,
+  // };
 
 export default {
   name: 'Detail',
@@ -155,7 +174,8 @@ export default {
     return {
       carId: 12,
       topResrvedOffset: 45, // 顶部tab预留高度
-      swiperOption: { // swipe配置
+      swiperOption: {
+        // swipe配置
         loop: true,
       },
       bannerIndex: 1,
@@ -179,32 +199,40 @@ export default {
         index: null,
       },
       recommendList: [],
-      topTabElemMap: [
-        {
-          title: '金融方案',
-          elem: '.car-info_program', // 金融方案
-          offsetTop: '',
-        },
-        {
-          title: '车辆信息',
-          elem: '.car-info_configuration', // 车辆信息
-          offsetTop: '',
-        },
-        {
-          title: '购车说明',
-          elem: '.car-info_step', // 购车说明
-          offsetTop: '',
-        },
-        {
-          title: '为您推荐',
-          elem: '.car-recommend', // 为您推荐
-          offsetTop: '',
-        },
+      topTabElemMap: [{
+        title: '金融方案',
+        elem: '.car-info_program', // 金融方案
+        offsetTop: '',
+      },
+      {
+        title: '车辆信息',
+        elem: '.car-info_configuration', // 车辆信息
+        offsetTop: '',
+      },
+      {
+        title: '购车说明',
+        elem: '.car-info_step', // 购车说明
+        offsetTop: '',
+      },
+      {
+        title: '为您推荐',
+        elem: '.car-recommend', // 为您推荐
+        offsetTop: '',
+      },
       ],
       uaInfo: null,
     };
   },
   created() {
+    // eslint-disable-next-line
+      // window.userinfo = {
+    //   isLogin: true,
+    //   carId: 12,
+    //   formApp: 1,
+    //   userId: 123,
+    //   userToken: 'qm30apwcqvmzks5t9icxp9gagnq2kv2e',
+    // };
+    this.userinfo = window.userinfo;
     this.getCarId() && this.getCarDetail();
   },
   mounted() {
@@ -225,9 +253,7 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper;
     },
-    ...mapGetters([
-      'fromApp',
-    ]),
+    ...mapGetters(['fromApp']),
   },
   // beforeRouteUpdate (to, from, next) {
   //   next();
@@ -235,6 +261,16 @@ export default {
   //   // don't forget to call next()
   // },
   methods: {
+    addOrder() {
+      addOrder(this.carId, this.carInfo.price, this.carInfo.deptId, this.carInfo.financeId, 'news').then(res => {
+        if (res.errno === 0) {
+          webAction({
+            type: 'alert',
+            message: '预约成功',
+          });
+        }
+      });
+    },
     getCarId() {
       this.carId = this.$route.params.id || window.carId;
       if (!this.carId) {
@@ -274,6 +310,8 @@ export default {
         article: data.article.content,
         actives: data.acts,
         color: mode.colors ? mode.colors.split(',').join('、') : '',
+        deptId: data.dept_id,
+        financeId: data.finances[0].id ? data.finances[0].id : '暂时未获取',
       };
       this.carConfiguration = {
         discharge_standard: mode.discharge_standard,
@@ -291,6 +329,7 @@ export default {
             month: item.month,
             num: item.num,
             payrate: item.payrate,
+            id: 1,
           };
         }
       });
@@ -348,7 +387,12 @@ export default {
       if (!index && index !== 0) {
         this.scroll.scrollTo(0, 0, 300);
       } else {
-        this.scroll.scrollToElement(this.topTabElemMap[index]['elem'], 300, 0, -this.topResrvedOffset);
+        this.scroll.scrollToElement(
+          this.topTabElemMap[index]['elem'],
+          300,
+          0,
+          -this.topResrvedOffset
+        );
       }
     },
     _scroll(pos) {
@@ -390,10 +434,10 @@ export default {
         click: true,
         probeType: 3,
       });
-      this.scroll.on('scroll', (pos) => {
+      this.scroll.on('scroll', pos => {
         this._scroll(pos);
       });
-      this.scroll.on('scrollEnd', (pos) => {
+      this.scroll.on('scrollEnd', pos => {
         let stateFlag = this.topTabElemMap[0].offsetTop;
         if (-pos.y > stateFlag) {
           this.topTabActive.state = true;
@@ -529,7 +573,6 @@ export default {
       white-space: nowrap;
       margin-bottom: 5px;
     }
-
   }
 
   .link-all_btn {
@@ -557,7 +600,7 @@ export default {
     .tab_item {
       width: auto;
       height: 40px;
-      background: #ECF8FF;
+      background: #ecf8ff;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -573,7 +616,7 @@ export default {
         position: relative;
 
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           width: rem(25);
           height: 4px;
@@ -587,7 +630,7 @@ export default {
 
         &.active {
           color: $color_theme;
-          background: #FFF;
+          background: #fff;
 
           &::after {
             position: absolute;
@@ -619,7 +662,7 @@ export default {
         height: 100%;
         display: flex;
         text-align: center;
-        background: #ECF8FF;
+        background: #ecf8ff;
         min-width: 100%;
         max-width: 100%;
         margin-right: rem(15);
@@ -734,7 +777,7 @@ export default {
           width: 100%;
           background: $color_vice;
           font-size: rem(12);
-          color: #FFF;
+          color: #fff;
           height: 20px;
           line-height: 20px;
           max-height: 20px;
@@ -772,8 +815,9 @@ export default {
     width: 100%;
     height: 40px;
     box-sizing: border-box;
-    background: #FFF;
-    &.from-app{
+    background: #fff;
+
+    &.from-app {
       top: 0;
     }
 

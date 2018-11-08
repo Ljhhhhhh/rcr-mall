@@ -6,7 +6,28 @@ const webAction = (args) => {
     console.log('WKWebView post message');
   }
 };
+// webAction({
+//   type: 'alert',
+//   message: 'message',
+// });
+const OsAction = (...args) => {
+  // console.log(args[0], args[1]);
+  let func = args.shift();
+  window[func] = args[0];
+  // if (typeof func === 'function') {
+  //   window[func]();
+  // }
+};
 
-const OsAction = (args) => args;
-
-export {webAction, OsAction};
+// const getUserInfo = (string) => {
+//   let arrs = string.split('@');
+//   if (!arrs.length) return;
+//   let userToken = arrs[0];
+//   console.log(userToken);
+//   window.userToken = userToken;
+// };
+export {
+  webAction,
+  OsAction,
+  // getUserInfo,
+};

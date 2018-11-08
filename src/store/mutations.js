@@ -10,6 +10,9 @@ const matutaions = {
   [types.SET_AREA](state, area) {
     state.area = area;
   },
+  [types.SET_USERINFO](state, userinfo) {
+    state.userinfo = userinfo;
+  },
 };
 
 export default matutaions;

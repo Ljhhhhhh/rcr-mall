@@ -21,7 +21,7 @@ service.interceptors.request.use(
     config.headers['crossorigin'] = 'web';
     let params = JSON.stringify(config.params.data);
     config.headers['sign'] = params ? md5(params + '&' + SECRECT) : md5(SECRECT);
-    config.headers['token'] = 't1umu5p564ew3u94835995x8afsez741'; // 暂时用这个，登录接口完成之后修改
+    config.headers['token'] = (window.userinfo && window.userinfo.userToken) ? window.userinfo.userToken : 'temp usertoken'; // 暂时用这个，登录接口完成之后修改
     // }
     return config;
   },

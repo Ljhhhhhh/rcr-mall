@@ -44,7 +44,19 @@ export default new Router({
     path: '/second',
     name: 'secondList',
     component: () => import('@/pages/second/list'),
-  }, {
+    meta: {
+      title: '二手车',
+    },
+  },
+  {
+    path: '/sale',
+    name: 'secondSale',
+    component: () => import('@/pages/second/sale'),
+    meta: {
+      title: '卖车',
+    },
+  },
+  {
     path: '/second-detail/:id',
     name: 'secondDetail',
     component: () => import('@/pages/second/detail'),
@@ -61,6 +73,11 @@ export default new Router({
     path: '/city-select',
     name: 'citySelect',
     component: () => import('@/pages/common/citySelect'),
+  },
+  {
+    path: '/car-mode-select',
+    name: 'carModeSelect',
+    component: () => import('@/pages/common/allCar'),
   },
   ],
 });
