@@ -11,7 +11,7 @@ export function getCode(redirectUri) {
     },
   });
 }
-
+// redirectUri
 export function getOpenid(code) {
   return request({
     url: 'auth/login_wx',

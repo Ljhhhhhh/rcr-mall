@@ -224,15 +224,6 @@ export default {
     };
   },
   created() {
-    // eslint-disable-next-line
-      // window.userinfo = {
-    //   isLogin: true,
-    //   carId: 12,
-    //   formApp: 1,
-    //   userId: 123,
-    //   userToken: 'qm30apwcqvmzks5t9icxp9gagnq2kv2e',
-    // };
-    this.userinfo = window.userinfo;
     this.getCarId() && this.getCarDetail();
   },
   mounted() {
@@ -253,7 +244,7 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper;
     },
-    ...mapGetters(['fromApp']),
+    ...mapGetters(['fromApp', 'userinfo']),
   },
   // beforeRouteUpdate (to, from, next) {
   //   next();
@@ -262,12 +253,24 @@ export default {
   // },
   methods: {
     addOrder() {
-      addOrder(this.carId, this.carInfo.price, this.carInfo.deptId, this.carInfo.financeId, 'news').then(res => {
+      let fromApp = this.fromApp;
+      console.log('fromApp:', fromApp);
+      addOrder(
+        this.carId,
+        this.carInfo.price,
+        this.carInfo.deptId,
+        this.carInfo.financeId,
+        'news'
+      ).then(res => {
         if (res.errno === 0) {
-          webAction({
-            type: 'alert',
-            message: '预约成功',
-          });
+          if (fromApp) {
+            webAction({
+              type: 'alert',
+              message: '预约成功',
+            });
+          } else {
+            alert('预约成功');
+          }
         }
       });
     },
@@ -311,7 +314,7 @@ export default {
         actives: data.acts,
         color: mode.colors ? mode.colors.split(',').join('、') : '',
         deptId: data.dept_id,
-        financeId: data.finances[0].id ? data.finances[0].id : '暂时未获取',
+        financeId: data.finances[0] && data.finances[0].id ? data.finances[0].id : '暂时未获取',
       };
       this.carConfiguration = {
         discharge_standard: mode.discharge_standard,

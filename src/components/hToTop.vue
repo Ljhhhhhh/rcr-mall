@@ -23,9 +23,10 @@ export default {
     },
   },
 };
+
 </script>
 <style lang="scss" scoped>
-  .to-top_container{
+  .to-top_container {
     opacity: 0.85;
     filter: opacity(85);
     position: fixed;
@@ -33,9 +34,11 @@ export default {
     height: rem(48);
     right: rem(15);
     bottom: rem(127);
-    img{
+
+    img {
       width: 100%;
       height: auto;
     }
   }
+
 </style>

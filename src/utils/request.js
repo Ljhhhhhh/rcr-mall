@@ -1,5 +1,7 @@
 import axios from 'axios';
 import md5 from 'blueimp-md5';
+// import store from '@/store';
+import cookie from 'js-cookie';
 // import qs from 'qs';
 
 // create an axios instance
@@ -21,7 +23,9 @@ service.interceptors.request.use(
     config.headers['crossorigin'] = 'web';
     let params = JSON.stringify(config.params.data);
     config.headers['sign'] = params ? md5(params + '&' + SECRECT) : md5(SECRECT);
-    config.headers['token'] = (window.userinfo && window.userinfo.userToken) ? window.userinfo.userToken : 'temp usertoken'; // 暂时用这个，登录接口完成之后修改
+    let winToken = (window.userinfo && window.userinfo.userToken) ? window.userinfo.userToken : '';
+    let vuexToken = cookie.get('token') ? cookie.get('token') : '';
+    config.headers['token'] = winToken || vuexToken; // 暂时用这个，登录接口完成之后修改
     // }
     return config;
   },

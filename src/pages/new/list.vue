@@ -127,10 +127,10 @@ export default {
     this._initPage();
   },
   mounted() {
-    this.getBrandList();
-    if (!this.userinfo) {
+    if (!this.userinfo.usrId) {
       loginByWechat(this.$route.query);
     }
+    this.getBrandList();
   },
   beforeRouteUpdate(to, from, next) {
     next();
@@ -246,11 +246,11 @@ export default {
     async getBrandList() {
       if (!Storage.get('brandList')) {
         let brandRes = await fetchBrands();
-        brandRes.data.sort((a, b) => {
+        brandRes.data.rows.sort((a, b) => {
           return a.initial.charCodeAt(0) - b.initial.charCodeAt(0);
         });
         let brandObj = {};
-        brandRes.data.forEach(brand => {
+        brandRes.data.rows.forEach(brand => {
           if (!brandObj[brand.initial]) {
             brandObj[brand.initial] = {
               title: brand.initial,

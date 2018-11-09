@@ -1,7 +1,7 @@
 <template>
   <div class="consult van-hairline--top">
     <div class="content">
-      <div class="heart" @click="setHeart" :class="{'yes': !following}">
+      <div class="heart" @click="setHeart" :class="{'yes': following}">
         <i></i>
         <p>{{followState}}</p>
       </div>
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     followState() {
-      return this.following ? '关注' : '已关注';
+      return this.following ? '已关注' : '关注';
     },
   },
   data() {
