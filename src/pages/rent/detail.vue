@@ -18,11 +18,7 @@
         <div class="car-info_box">
           <div class="car-info_title">
             <span>{{carInfo.name}}</span>
-            <h-tag
-             :tag="tag.tag"
-             class="tag"
-             v-for="(tag, index) in carInfo.tags" :key="index"
-             :style="{background: '#999999',color:'#FFF'}" />
+            <h-tag :tag="tag.tag" class="tag" v-for="(tag, index) in carInfo.tags" :key="index" :style="{background: '#999999',color:'#FFF'}" />
           </div>
           <div class="car-info_conf">
             <span v-for="(conf, index) in carInfo.conf" :key="index">{{conf}}</span>
@@ -62,35 +58,35 @@
             <p class="rent-process_title">
               <i class="first"></i>
               <span>预约到店</span>
-              </p>
+            </p>
             <p class="rent-process_desc">在APP内预约成功后，我们的销售顾问会在24小时内为您安排1对1服务</p>
           </div>
           <div class="rent-process_box">
             <p class="rent-process_title">
               <i class="second"></i>
               <span>支付费用</span>
-              </p>
+            </p>
             <p class="rent-process_desc">在门店支付订单所需费用</p>
           </div>
           <div class="rent-process_box">
             <p class="rent-process_title">
               <i class="third"></i>
               <span>使用车辆</span>
-              </p>
+            </p>
             <p class="rent-process_desc">用车过程中如遇到任何问题可随时联系取车门店，我 们会在第一时间解决您遇到的问题</p>
           </div>
           <div class="rent-process_box">
             <p class="rent-process_title">
               <i class="fourth"></i>
               <span>费用结算</span>
-              </p>
+            </p>
             <p class="rent-process_desc">还车，结算租车费用。车辆押金实时退还，违章押金 会在还车后一个礼拜内退还</p>
           </div>
         </div>
       </div>
     </div>
     <keep-alive>
-      <h-consult @changeFollow="changeFollow" :following="carInfo.follow"></h-consult>
+      <h-consult @changeFollow="changeFollow" :following="carInfo.follow" @addOrder="addOrder"></h-consult>
     </keep-alive>
   </div>
 </template>
@@ -99,13 +95,23 @@ import hConsult from '@/components/hConsult';
 import BScroll from 'better-scroll';
 import clearupList from '@/utils/clearupAlbumlist';
 import hTag from '@/components/hTag';
-import {carDetail} from '@/api/car/carDetail';
-import {changeFollow} from '@/api/car/carFollow';
+import {
+  carDetail,
+} from '@/api/car/carDetail';
+import {
+  changeFollow,
+} from '@/api/car/carFollow';
 import 'swiper/dist/css/swiper.css';
 import {
   swiper,
   swiperSlide,
 } from 'vue-awesome-swiper';
+import {
+  addOrder,
+} from '@/api/order/order';
+import {
+  webAction,
+} from '@/utils/contactOs';
 export default {
   name: 'rentDetail',
   data() {
@@ -141,7 +147,30 @@ export default {
     },
   },
   methods: {
+    addOrder() {
+      let fromApp = this.fromApp;
+      console.log('fromApp:', fromApp);
+      addOrder(
+        this.carId,
+        this.carInfo.price,
+        this.carInfo.deptId,
+        this.carInfo.financeId,
+        'rentings'
+      ).then(res => {
+        if (res.errno === 0) {
+          if (fromApp) {
+            webAction({
+              type: 'alert',
+              message: '预约成功',
+            });
+          } else {
+            alert('预约成功');
+          }
+        }
+      });
+    },
     async getCarDetail() {
+      this.carId = this.$route.params.id || window.carId;
       let res = await carDetail(this.carId);
       let data = res.data;
       console.log(data);
@@ -155,6 +184,7 @@ export default {
         actives: data.acts,
         payment: data.payment,
         platNo: mode.platNo.replace(/^(.{2})(.*)(.{1})$/g, '$1****$3'),
+        deptId: data.dept_id,
       };
       this.confListMap.forEach(conf => {
         if (mode[conf]) {
@@ -196,12 +226,14 @@ export default {
 </script>
 <style lang="scss" scoped>
   $rent_sprit: url('~static/images/rent-css_sprites.png') no-repeat;
-  .partition{
+
+  .partition {
     width: 100%;
     height: 10px;
     background: #F2F2F2;
     margin: 15px auto;
   }
+
   .scroll-wrap {
     width: 100%;
     height: calc(100vh - 104px);
@@ -241,16 +273,19 @@ export default {
       z-index: 3;
     }
   }
-  .car-info_box{
+
+  .car-info_box {
     width: auto;
     height: auto;
     padding: 0 rem(15);
-    .car-info_title{
+
+    .car-info_title {
       display: flex;
       justify-content: space-between;
       align-items: center;
       line-height: rem(18);
-      span{
+
+      span {
         flex: 1;
         color: $font_vice;
         font-size: rem(14);
@@ -258,25 +293,29 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .tag{
+
+      .tag {
         max-width: 5em;
         margin-right: 0;
         margin-left: rem(5);
       }
     }
-    .car-info_conf{
+
+    .car-info_conf {
       width: auto;
       height: auto;
       line-height: rem(15);
       margin-top: 15px;
-      span{
+
+      span {
         display: inline-block;
         padding: 0 rem(15);
         position: relative;
         font-family: $font_bold;
         color: $font_theme;
         font-size: rem(15);
-        &::before{
+
+        &::before {
           position: absolute;
           content: '';
           left: 0;
@@ -289,11 +328,13 @@ export default {
         }
       }
     }
-    .car-info_offers{
+
+    .car-info_offers {
       line-height: rem(16);
       margin-top: 15px;
       min-height: rem(16);
-      span{
+
+      span {
         display: inline-block;
         width: rem(50);
         height: rem(15);
@@ -306,7 +347,8 @@ export default {
         color: #FFF;
         padding: rem(2) rem(5);
       }
-      label{
+
+      label {
         float: right;
         color: #666;
         font-size: rem(13);
@@ -314,42 +356,51 @@ export default {
         height: rem(15);
       }
     }
-    .car-info_price{
+
+    .car-info_price {
       margin-top: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      p:first-child{
+
+      p:first-child {
         color: $color_vice;
-        strong{
+
+        strong {
           font-size: 1.3em;
         }
-        span{
+
+        span {
           color: $font_vice;
           text-decoration: line-through;
         }
       }
-      p:last-child{
+
+      p:last-child {
         color: #999;
-        strong{
+
+        strong {
           font-size: 1.3em;
           color: $font_vice;
         }
       }
     }
   }
-  .net-info_box{
+
+  .net-info_box {
     width: auto;
     height: auto;
     padding: 0 rem(15);
     position: relative;
-    .net-info_content{
-      p.net-info_title{
+
+    .net-info_content {
+      p.net-info_title {
         font-size: rem(15);
         color: $font_theme;
         text-indent: 0;
         margin: 0 0 14px 0;
-        i{
+
+        i {
           display: inline-block;
           width: 10px;
           height: 13px;
@@ -358,13 +409,15 @@ export default {
           background-position: -2px -2px;
           vertical-align: middle;
         }
-        span{
+
+        span {
           display: inline-block;
           vertical-align: middle;
           margin-left: 5px;
         }
       }
-      p{
+
+      p {
         text-indent: 1em;
         line-height: rem(13);
         font-size: rem(13);
@@ -373,13 +426,15 @@ export default {
         margin-top: 10px;
       }
     }
-    .net-info_nevigate{
+
+    .net-info_nevigate {
       position: absolute;
       right: rem(15);
       bottom: 0;
       width: 30px;
       height: auto;
-      i{
+
+      i {
         display: block;
         width: 30px;
         height: 30px;
@@ -387,7 +442,8 @@ export default {
         background-size: 180px 34px;
         background-position: -148px -2px;
       }
-      span{
+
+      span {
         display: block;
         color: $font_vice;
         font-size: rem(12);
@@ -397,13 +453,16 @@ export default {
       }
     }
   }
-  .car-rent_process{
+
+  .car-rent_process {
     width: auto;
     height: auto;
     padding: 0 rem(15);
-    .car-rent_title{
+
+    .car-rent_title {
       margin-bottom: 25px;
-      i{
+
+      i {
         display: inline-block;
         width: 13px;
         height: 13px;
@@ -412,18 +471,21 @@ export default {
         background-position: -15px -2px;
         vertical-align: middle;
       }
-      span{
+
+      span {
         display: inline-block;
         vertical-align: middle;
         margin-left: 5px;
       }
     }
-    .rent-process_box{
+
+    .rent-process_box {
       width: auto;
       height: auto;
       padding-bottom: 17px;
       position: relative;
-      &::before{
+
+      &::before {
         position: absolute;
         content: '';
         width: 0;
@@ -432,11 +494,13 @@ export default {
         left: 12px;
         top: 24px;
       }
-      &:last-child::before{
+
+      &:last-child::before {
         display: none;
       }
-      .rent-process_title{
-        i{
+
+      .rent-process_title {
+        i {
           display: inline-block;
           width: 25px;
           height: 25px;
@@ -444,26 +508,32 @@ export default {
           background-size: 183px 33px;
           vertical-align: middle;
           margin-right: rem(10);
-          &.first{
+
+          &.first {
             background-position: -93px -2px;
           }
-          &.second{
-          background-position: -122px -2px;
+
+          &.second {
+            background-position: -122px -2px;
           }
-          &.third{
+
+          &.third {
             background-position: -64px -2px;
           }
-          &.fourth{
+
+          &.fourth {
             background-position: -34px -2px;
           }
         }
-        span{
+
+        span {
           vertical-align: middle;
           font-family: $font_bold;
           color: $font_theme;
         }
       }
-      .rent-process_desc{
+
+      .rent-process_desc {
         margin-top: 9px;
         padding-left: rem(38);
         font-size: rem(13);
@@ -472,4 +542,5 @@ export default {
       }
     }
   }
+
 </style>

@@ -34,7 +34,7 @@
           <!-- <p class="rent-time_clock">周一15：00</p> -->
         </div>
       </div>
-      <div class="rent-back_btn">去选车</div>
+      <div class="rent-back_btn" @click="selectRent">去选车</div>
     </div>
     <div class="rent-advantage_box">
       <div v-for="(advantage, index) in advantageList" :key="index">
@@ -45,14 +45,9 @@
     </div>
 
     <van-popup v-model="timeObj.datetimeShow" position="bottom" class="datetime-select_popup">
-      <van-nav-bar
-        right-text="确定"
-        left-arrow
-        @click-left="closeTime"
-        @click-right="sureTime"
-      >
-      <span slot="title" class="datetime-title">取车时间</span>
-      <span slot="left" class="datecancel-btn">取消</span>
+      <van-nav-bar right-text="确定" left-arrow @click-left="closeTime" @click-right="sureTime">
+        <span slot="title" class="datetime-title">取车时间</span>
+        <span slot="left" class="datecancel-btn">取消</span>
       </van-nav-bar>
       <div class="datetime-type_toggle">
         <div class="datetime-type_item" :class="{active: timeObj.currentDateType==='get'}" @click="toggleTimeType('get')">
@@ -64,29 +59,21 @@
           <p class="datetime-type_date">{{timeObj.backCarTime | formatTime}}</p>
         </div>
       </div>
-      <van-datetime-picker
-        v-if="timeObj.currentDateType==='get'"
-        :show-toolbar="false"
-        v-model="timeObj.getCarTime"
-        type="date"
-        :min-date="minDate"
-        @confirm="datetimeSelect"
-      />
-      <van-datetime-picker
-        v-else
-        :show-toolbar="false"
-        v-model="timeObj.backCarTime"
-        type="date"
-        :min-date="new Date(timeObj.getCarTime)"
-        @confirm="datetimeSelect"
-      />
+      <van-datetime-picker v-if="timeObj.currentDateType==='get'" :show-toolbar="false" v-model="timeObj.getCarTime"
+        type="date" :min-date="minDate" @confirm="datetimeSelect" />
+      <van-datetime-picker v-else :show-toolbar="false" v-model="timeObj.backCarTime" type="date" :min-date="new Date(timeObj.getCarTime)"
+        @confirm="datetimeSelect" />
     </van-popup>
   </div>
 </template>
 <script>
-import {mapGetters} from 'vuex';
+import {
+  mapGetters,
+} from 'vuex';
 import dayjs from 'dayjs';
-import {getAppid} from '@/api/common/getAppid';
+import {
+  getAppid,
+} from '@/api/common/getAppid';
 import wx from 'weixin-js-sdk';
 // import axios from 'axios';
 // import AMap from 'vue-amap';
@@ -104,11 +91,26 @@ export default {
       },
       minDate: new Date(),
       address: '',
+      latlon: {
+        lat: '',
+        lon: '',
+      },
       bannerUrl: 'static/images/rent-list_banner.png',
-      advantageList: [
-        {icon: 'static/images/rent-service_map.png', title: '100<sup>+</sup>城市', desc: '2000<sup>+</sup>服务网点'},
-        {icon: 'static/images/rent-service_car.png', title: '200<sup>+</sup>车型', desc: '30000<sup>+</sup>车辆'},
-        {icon: 'static/images/rent-service_advance.png', title: '7*24客服', desc: '金牌客服为您服务'},
+      advantageList: [{
+        icon: 'static/images/rent-service_map.png',
+        title: '100<sup>+</sup>城市',
+        desc: '2000<sup>+</sup>服务网点',
+      },
+      {
+        icon: 'static/images/rent-service_car.png',
+        title: '200<sup>+</sup>车型',
+        desc: '30000<sup>+</sup>车辆',
+      },
+      {
+        icon: 'static/images/rent-service_advance.png',
+        title: '7*24客服',
+        desc: '金牌客服为您服务',
+      },
       ],
     };
   },
@@ -124,9 +126,22 @@ export default {
     ]),
   },
   methods: {
+    selectRent() {
+      if (!this.latlon.lat || !this.latlon.lon) {
+        alert('未获取到地址，请允许获取您当前的地址');
+        return false;
+      }
+      this.$router.push({
+        name: 'rentList',
+        params: {
+          lat: this.latlon.lat,
+          lon: this.latlon.lon,
+        },
+      });
+    },
     async getAppid() {
-      // let href = window.location.href;
-      let href = 'http://testmb.chetianyi.com/#/rent';
+      let href = window.location.href;
+      // let href = 'http://testmb.chetianyi.com/#/rent';
       let res = await getAppid(href);
       let me = this;
       wx.config({
@@ -137,16 +152,20 @@ export default {
         signature: res.data.signature, // 必填，签名
         jsApiList: ['getLocation'], // 必填，需要使用的JS接口列表
       });
-      wx.ready(function() {
+      wx.ready(function () {
         wx.getLocation({
           type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
           success: async function (res) {
             let lnglats = [res.longitude, res.latitude];
+            me.latlon = {
+              lat: res.latitude,
+              lon: res.longitude,
+            };
             // eslint-disable-next-line
-            AMap.plugin('AMap.Geocoder', function() {
+              AMap.plugin('AMap.Geocoder', function () {
               // eslint-disable-next-line
-              var geocoder = new AMap.Geocoder({});
-              geocoder.getAddress(lnglats, function(status, address) {
+                var geocoder = new AMap.Geocoder({});
+              geocoder.getAddress(lnglats, function (status, address) {
                 console.log(status, 121655614651, address);
                 if (status === 'complete' && address.info === 'OK') {
                   // result为对应的地理位置详细信息
@@ -155,12 +174,12 @@ export default {
               });
             });
           },
-          fail: function(err) {
+          fail: function (err) {
             console.log('error:', err);
           },
         });
       });
-      wx.error(function(err) {
+      wx.error(function (err) {
         console.log('wxerr:', err);
       });
       // console.log(res);
@@ -189,58 +208,66 @@ export default {
     },
   },
 };
+
 </script>
 <style lang="scss" scoped>
-.container{
-  background: #F2F2F2;
-}
-.header-chat_icon {
-  vertical-align: middle;
-}
-.rent-list_banner{
-  width: 100%;
-  padding-top: 42.67%;
-  background: url('~static/images/rent-list_banner.png');
-  background-size: cover;
-  height: auto;
-  font-size: 0;
-}
-.rent-advantage_box{
-  position: fixed;
-  bottom: 30px;
-  right: 0;
-  left: 0;
-  padding: 0 rem(30);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  div{
-    flex: 1;
-    height: 85px;
+  .container {
+    background: #F2F2F2;
+  }
+
+  .header-chat_icon {
+    vertical-align: middle;
+  }
+
+  .rent-list_banner {
+    width: 100%;
+    padding-top: 42.67%;
+    background: url('~static/images/rent-list_banner.png');
+    background-size: cover;
+    height: auto;
+    font-size: 0;
+  }
+
+  .rent-advantage_box {
+    position: fixed;
+    bottom: 30px;
+    right: 0;
+    left: 0;
+    padding: 0 rem(30);
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    text-align: center;
-    font-size: rem(12);
-    color: #999;
-    p.img{
-      height: 45px;
-      position: relative;
-      margin-top: 0;
-      img{
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        height: 38px;
-        width: auto;
-        margin: auto;
+
+    div {
+      flex: 1;
+      height: 85px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      font-size: rem(12);
+      color: #999;
+
+      p.img {
+        height: 45px;
+        position: relative;
+        margin-top: 0;
+
+        img {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          height: 38px;
+          width: auto;
+          margin: auto;
+        }
       }
     }
   }
-}
-.address-select {
+
+  .address-select {
     flex: 1;
     min-width: 6em;
     line-height: 45px;
@@ -253,31 +280,35 @@ export default {
       font-style: normal;
     }
   }
-  .rent-main_control{
+
+  .rent-main_control {
     width: auto;
     height: auto;
     margin: rem(-10) rem(15) 0;
     // padding-bottom: rem(25);
     padding: 0 rem(15) rem(25);
     background: #FFF;
-    box-shadow:0 rem(2) rem(3) 0 rgba(4,0,0,0.2);
-    border-radius:rem(3);
-    .rent-address_select{
+    box-shadow: 0 rem(2) rem(3) 0 rgba(4, 0, 0, 0.2);
+    border-radius: rem(3);
+
+    .rent-address_select {
       // display: flex;
       justify-content: space-between;
       height: 45px;
       line-height: 45px;
       width: 100%;
-      .select-map_btn{
+
+      .select-map_btn {
         width: 100%;
         // flex: 1;
         // max-width: 65%;
         position: relative;
+
         // padding-left: rem(15);
         // background: linear-gradient(to bottom, #fff 30%, #ccc 30%, #ccc 70%, #fff 70%);
         // background-size: 1px 100%;
         // background-repeat: no-repeat;
-        p{
+        p {
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -286,12 +317,14 @@ export default {
           display: inline-block;
           line-height: 45px;
           font-size: rem(15);
-          i{
+
+          i {
             vertical-align: -2px;
             margin-right: rem(5);
             max-width: 10%;
           }
-          span{
+
+          span {
             display: inline-block;
             max-width: 90%;
             overflow: hidden;
@@ -300,7 +333,8 @@ export default {
             vertical-align: middle;
           }
         }
-        div.icon{
+
+        div.icon {
           position: absolute;
           right: rem(10);
           top: 50%;
@@ -308,34 +342,39 @@ export default {
         }
       }
     }
-    .rent-time_select{
+
+    .rent-time_select {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: rem(25) 0;
       position: relative;
-      .rent-time{
-        .rent-time_title{
+
+      .rent-time {
+        .rent-time_title {
           font-size: rem(13);
           color: $font_vice;
           margin-bottom: rem(20);
           line-height: rem(13);
         }
-        .rent-time_date{
+
+        .rent-time_date {
           font-size: rem(18);
           line-height: rem(18);
           font-family: $font_bold;
           font-weight: bold;
           color: $font_theme;
         }
-        .rent-time_clock{
+
+        .rent-time_clock {
           font-size: rem(13);
           line-height: rem(13);
           color: $font_vice;
           margin-top: rem(9);
         }
       }
-      .rent-time_count{
+
+      .rent-time_count {
         position: absolute;
         left: 50%;
         top: 50%;
@@ -350,7 +389,8 @@ export default {
         background-size: 67px 5px;
       }
     }
-    .rent-back_btn{
+
+    .rent-back_btn {
       border-radius: rem(3);
       color: #FFF;
       width: auto;
@@ -362,40 +402,48 @@ export default {
       font-size: rem(15);
     }
   }
-  .datetime-select_popup{
-    .datetime-title{
+
+  .datetime-select_popup {
+    .datetime-title {
       color: $font_theme;
       font-size: rem(18);
     }
-    .datecancel-btn{
+
+    .datecancel-btn {
       color: #999;
       font-size: rem(15);
     }
-    .datetime-type_toggle{
+
+    .datetime-type_toggle {
       height: rem(48);
       width: 100%;
       background: #F2F2F2;
       display: flex;
-      .datetime-type_item{
+
+      .datetime-type_item {
         flex: 1;
         width: 50%;
         height: 100%;
         color: $font_theme;
         text-align: center;
         padding-top: rem(5);
-        &.active{
+
+        &.active {
           color: #FFF;
           background: $color_theme;
         }
-        .datetime-type_title{
+
+        .datetime-type_title {
           font-size: rem(12);
           line-height: rem(20);
           margin: 0 auto;
         }
-        .datetime-type_date{
+
+        .datetime-type_date {
           font-size: rem(13);
         }
       }
     }
   }
+
 </style>

@@ -16,15 +16,15 @@ export function formatTime(time) {
 }
 
 export function formatMile(mile) {
-  console.log(mile);
   if (!mile) {
     return '未知';
   }
   let m = '';
   if (Number(mile) > 1000) {
     m = (mile / 1000).toFixed(2) + 'K';
+  } else {
+    m = mile;
   }
-  console.log(m);
   m += 'm';
   return m;
 }

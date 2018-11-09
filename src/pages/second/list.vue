@@ -1,7 +1,7 @@
 <template>
   <div class="container" ref="container">
     <h-header title="二手车" ref="header">
-      <span slot="right" class="sale_btn" @click="goSale">卖车</span>
+      <!-- <span slot="right" class="sale_btn" @click="goSale">卖车</span> -->
     </h-header>
     <div class="search-box" ref="search">
       <div class="address-select" @click="selectCity">
@@ -94,6 +94,8 @@ import {
   mapGetters,
 } from 'vuex';
 import Storage from 'good-storage';
+import loginByWechat from '@/utils/wx';
+
 export default {
   name: 'secondList',
   data() {
@@ -123,13 +125,16 @@ export default {
     this._initPage();
   },
   mounted() {
+    if (!this.userinfo.usrId) {
+      loginByWechat(this.$route.query);
+    }
     this.getBrandList();
   },
   beforeRouteUpdate(to, from, next) {
     next();
   },
   computed: {
-    ...mapGetters(['area']),
+    ...mapGetters(['area', 'userinfo']),
   },
   methods: {
     goSale() {
@@ -254,11 +259,11 @@ export default {
     async getBrandList() {
       if (!Storage.get('brandList')) {
         let brandRes = await fetchBrands();
-        brandRes.data.sort((a, b) => {
+        brandRes.data.rows.sort((a, b) => {
           return a.initial.charCodeAt(0) - b.initial.charCodeAt(0);
         });
         let brandObj = {};
-        brandRes.data.forEach(brand => {
+        brandRes.data.rows.forEach(brand => {
           if (!brandObj[brand.initial]) {
             brandObj[brand.initial] = {
               title: brand.initial,

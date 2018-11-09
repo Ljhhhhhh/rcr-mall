@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      iconUrl: 'static/images/to-top_icon.png',
+      iconUrl: '/static/images/to-top_icon.png',
     };
   },
   methods: {

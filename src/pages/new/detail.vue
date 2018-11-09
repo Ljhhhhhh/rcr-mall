@@ -172,7 +172,7 @@ export default {
   name: 'Detail',
   data() {
     return {
-      carId: 12,
+      carId: '',
       topResrvedOffset: 45, // 顶部tab预留高度
       swiperOption: {
         // swipe配置

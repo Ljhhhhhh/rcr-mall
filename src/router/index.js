@@ -36,8 +36,8 @@ export default new Router({
     },
   },
   {
-    path: '/rent/detail',
-    name: 'RentDetail',
+    path: '/rent/detail/:id',
+    name: 'rentDetail',
     component: () => import('@/pages/rent/detail'),
   },
   {

@@ -1,10 +1,10 @@
 <template>
   <div class="container" ref="container">
     <h-header title="租车" ref="header">
-      <p slot="right" class="search-car_btn">
+      <!-- <p slot="right" class="search-car_btn">
         <van-icon class="search-car_icon" name="search" />
         <span>搜车</span>
-      </p>
+      </p> -->
     </h-header>
     <div class="type-filter_box van-hairline--bottom" ref="filter">
       <div class="type-filter_item" :class="{'selected': filter.no===currentOpenSelect}" v-for="filter in filterOptions"
@@ -51,7 +51,7 @@
     <h-scroll class="scroll-box" :listenScroll="true" @scroll="loadMore" :pullup="true" @scrollToEnd="scrollToEnd" ref="scrollCar">
       <div class="car-list_box">
         <!-- <div v-for="(n, i) in 5" :key="i"> -->
-        <div class="car-list_item van-hairline--bottom" v-for="car in carList" :key="car.id">
+        <div class="car-list_item van-hairline--bottom" v-for="car in carList" :key="car.id" @click="rentDetail(car.id)">
           <div class="car-info_thumb"><img v-lazy="car.thumb"></div>
           <div class="car-info_desc">
             <p class="car-info_title"><strong>{{car.title}}</strong>
@@ -90,6 +90,11 @@ import {
   fetchBrands,
 } from '@/api/common/brand';
 import originFilterOptions from './config/index.js';
+import loginByWechat from '@/utils/wx';
+import {
+  mapGetters,
+} from 'vuex';
+
 export default {
   name: 'rentList',
   data() {
@@ -121,11 +126,14 @@ export default {
     this._initPage();
   },
   mounted() {
+    if (!this.userinfo.usrId) {
+      loginByWechat(this.$route.query);
+    }
     this.getBrandList();
   },
   watch: {
     selectedData() {
-      this.filterHandle();
+      // this.filterHandle();
     },
   },
   computed: {
@@ -158,8 +166,16 @@ export default {
       }
       return showArr;
     },
+    ...mapGetters([
+      'userinfo',
+    ]),
   },
   methods: {
+    rentDetail(id) {
+      this.$router.push({
+        path: '/rent/detail/' + id,
+      });
+    },
     cancelSelectData(selected) {
       console.log(selected);
       for (let key in this.selectedData) {
@@ -167,9 +183,11 @@ export default {
           this.selectedData[key] = null;
         }
       }
+      this.filterHandle();
     },
     resetSelectedData() {
       this.$set(this, 'selectedData', {});
+      this.filterHandle();
       // Object.keys(this.selectedData).map(key => {
       //   console.log(key);
       //   let lat = this.selectedData.lat;
@@ -203,23 +221,23 @@ export default {
         return;
       }
       this.$set(this.selectedData, 'downPay', option);
-      // this.filterHandle();
+      this.filterHandle();
     },
     brandSelected(item) {
       this.$set(this.selectedData, 'brand', {
         name: item.name,
         id: item.id,
       });
-      // this.filterHandle();
+      this.filterHandle();
     },
     async getCarList(loadMore = false) {
       // let defaultResponse = this.defaultResponseData;
       if (!this.defaultResponseData.lat || this.defaultResponseData.lon) {
-        this.defaultResponseData.lat = this.$route.query.lat + '';
-        this.defaultResponseData.lon = this.$route.query.lon + '';
+        this.defaultResponseData.lat = this.$route.params.lat + '';
+        this.defaultResponseData.lon = this.$route.params.lon + '';
       }
 
-      console.log(this.selectedData); // 设置selecteddata
+      console.log('this.defaultResponseData:', this.defaultResponseData); // 设置selecteddata
       let moreData = {};
       Object.keys(this.selectedData).forEach(key => {
         if (this.selectedData[key]) {

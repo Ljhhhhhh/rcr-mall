@@ -118,7 +118,7 @@
       </div>
     </div>
     <keep-alive>
-      <h-consult @changeFollow="changeFollow" :following="carInfo.follow"></h-consult>
+      <h-consult @changeFollow="changeFollow" :following="carInfo.follow" @addOrder="addOrder"></h-consult>
     </keep-alive>
     <h-to-top :show="toTopShow" @scrollToTop="scrollToElement"></h-to-top>
     <div class="fix-top_tab van-hairline--bottom" :class="{'from-app': fromApp}" v-show="topTabActive.state">
@@ -154,6 +154,12 @@ import {
 import {
   changeFollow,
 } from '@/api/car/carFollow';
+import {
+  addOrder,
+} from '@/api/order/order';
+import {
+  webAction,
+} from '@/utils/contactOs';
   // import {OsAction} from '@/utils/contactOs';
 
 export default {
@@ -241,6 +247,28 @@ export default {
   //   // don't forget to call next()
   // },
   methods: {
+    addOrder() {
+      let fromApp = this.fromApp;
+      console.log('fromApp:', fromApp);
+      addOrder(
+        this.carId,
+        this.carInfo.price,
+        this.carInfo.deptId,
+        this.carInfo.financeId,
+        'olds'
+      ).then(res => {
+        if (res.errno === 0) {
+          if (fromApp) {
+            webAction({
+              type: 'alert',
+              message: '预约成功',
+            });
+          } else {
+            alert('预约成功');
+          }
+        }
+      });
+    },
     getCarId() {
       this.carId = this.$route.params.id || window.carId;
       if (!this.carId) {
@@ -280,6 +308,7 @@ export default {
         article: data.article.content,
         actives: data.acts,
         color: mode.colors ? mode.colors.split(',').join('、') : '',
+        deptId: data.dept_id,
       };
       this.carConfiguration = {
         discharge_standard: mode.discharge_standard,
